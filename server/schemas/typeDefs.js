@@ -1,123 +1,123 @@
 const typeDefs = `
+  scalar Date
 
-    scalar Date
+  type Query {
+    goalCategories: [GoalCategory]
+    goals: [Goal]
+    milestones: [Milestone]
+    tasks: [Task]
+    goal(id: ID!): Goal
+    milestone(id: ID!): Milestone
+    task(id: ID!): Task
+  }
 
-    type Query {
-        goalCategories: [GoalCategory]
-        goals: [Goal]
-        milestones: [Milestone]
-        tasks: [Task]
-        goal (id: ID!): Goal
-        milestone(id: ID!): Milestone
-        task(id: ID!): Task
-    }
+  type Goal {
+    _id: ID!
+    goal_name: String!
+    description: String
+    category: GoalCategory
+    icon: String
+    icon_color: String
+    target_date: Date
+    status: String
+    progress: Int
+  }
 
-    type Goal {
-        _id: ID!
-        goal_name: String!
-        description: String
-        category: GoalCategory
-        icon: String
-        icon_color: String
-        target_date: Date
-        status: String
-        progress: Int
-    }
+  type GoalCategory {
+    _id: ID!
+    category_name: String!
+    icon: String!
+    color: String
+    createdAt: Date
+    updatedAt: Date
+  }
 
-    type GoalCategory {
-        _id: ID!
-        category_name: String!
-        icon: String!
-        color: String
-        createdAt: Date
-        updatedAt: Date
-    }
+  type Milestone {
+    _id: ID!
+    title: String!
+    goal: Goal
+    description: String
+    target_date: Date
+    completed: Boolean
+    order: Int
+    createdAt: Date
+    updatedAt: Date
+  }
 
-    type Milestone {
-        _id: ID!
-        title: String!
-        goal: Goal
-        description: String
-        target_date: Date
-        completed: Boolean
-        order: Int
-        createdAt: Date
-        updatedAt: Date
-    }
+  type Task {
+    _id: ID!
+    title: String!
+    description: String
+    goal: Goal
+    milestone: Milestone
+    due_date: Date
+    due_time: String
+    priority: String
+    recurrence: String
+    recurrence_days: [Int]
+    recurrence_end_date: Date
+    completed: Boolean
+    createdAt: Date
+    updatedAt: Date
+  }
 
-    type Task {
-        _id: ID!
-        title: String!
-        description: String
-        goal: Goal
-        milestone: Milestone
-        due_date: Date
-        due_time: String
-        priority: String
-        recurrence: String
-        recurrence_days: [Int]
-        recurrence_end_date: Date
-        completed: Boolean
-        createdAt: Date
-        updatedAt: Date
-    }
+  input GoalCategoryInput {
+    category_name: String!
+    icon: String!
+    color: String
+  }
 
-    input GoalCategoryInput {
-        category_name: String!
-        icon: String!
-        color: String
-        }
+  input GoalInput {
+    goal_name: String!
+    description: String
+    category_id: ID!
+    icon: String
+    icon_color: String
+    target_date: Date
+    status: String
+    progress: Int
+  }
 
-    input GoalInput {
-        goal_name: String!
-        description: String
-        category_id: ID!
-        icon: String
-        icon_color: String
-        target_date: Date
-        status: String
-        progress: Int
-        }
+  input MilestoneInput {
+    title: String!
+    goal_id: ID!
+    description: String
+    target_date: Date
+    completed: Boolean
+    order: Int
+  }
 
-    input MilestoneInput {
-        title: String!
-        goal_id: ID!
-        description: String
-        target_date: Date
-        completed: Boolean
-        order: Int
-        }
+  input TaskInput {
+    title: String!
+    description: String
+    goal_id: ID
+    milestone_id: ID
+    due_date: Date
+    due_time: String
+    priority: String
+    recurrence: String
+    recurrence_days: [Int]
+    recurrence_end_date: Date
+    completed: Boolean
+  }
 
-    input TaskInput {
-        title: String!
-        description: String
-        goal_id: ID
-        milestone_id: ID
-        due_date: Date
-        due_time: String
-        priority: String
-        recurrence: String
-        recurrence_days: [Int]
-        recurrence_end_date: Date
-        completed: Boolean
-        }
+  type Mutation {
+    addGoal(goalInput: GoalInput!): Goal
+    editGoal(id: ID!, goalInput: GoalInput!): Goal
+    deleteGoal(id: ID!): Boolean
 
-    type Mutation {
-        addGoal(goalInput: GoalInput!): Goal
-        editGoal(id: ID!, goalInput: GoalInput!): Goal
-        deleteGoal(id: ID!): Boolean
+    addGoalCategory(goalCategoryInput: GoalCategoryInput!): GoalCategory
+    editGoalCategory(id: ID!, goalCategoryInput: GoalCategoryInput!): GoalCategory
+    deleteGoalCategory(id: ID!): Boolean
 
-        addGoalCategory(goalCategoryInput: GoalCategoryInput!): GoalCategory
-        editGoalCategory(id: ID!, goalCategoryInput: GoalCategoryInput!): GoalCategory
-        deleteGoalCategory(id: ID!):Boolean
+    addMilestone(MilestoneInput: MilestoneInput!): Milestone
+    editMilestone(id: ID!, milestoneInput: MilestoneInput!): Milestone
+    deleteMilestone(id: ID!): Boolean
 
-        addMilestone(MilestoneInput: MilestoneInput!): Milestone
-        editMilestone(id: ID!, milestoneInput: MilestoneInput!): Milestone
-        deleteMilestone(id: ID!): Boolean
-
-        addTask(taskInput: TaskInput!): Task
-        editTask(id: ID!, taskInput: TaskInput!): Task
-        deleteTask(id: ID!): Boolean
-
-    }
+    addTask(taskInput: TaskInput!): Task
+    editTask(id: ID!, taskInput: TaskInput!): Task
+    deleteTask(id: ID!): Boolean
+  }
 `;
+
+export default typeDefs;

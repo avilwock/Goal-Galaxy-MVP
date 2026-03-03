@@ -1,6 +1,6 @@
-const Goal = require('./Goal')
-const GoalCategory = require('./GoalCategory')
-const Milestone = require('./Milestone')
-const Task = require('./Task')
+import { Goal } from './Goal.js';
+import { GoalCategory } from './GoalCategory.js';
+import { Milestone } from './Milestone.js';
+import { Task } from './Task.js';
 
-module.exports = { Goal, GoalCategory, Milestone, Task};
+export { Goal, GoalCategory, Milestone, Task };

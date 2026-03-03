@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const {Schema, model } = mongoose
 
 const milestoneSchema = new Schema({
@@ -40,5 +40,4 @@ const milestoneSchema = new Schema({
  timestamps: true,
 });
 
-const Milestone = model('Milestone', milestoneSchema);
-module.exports = Milestone;
+export const Milestone = model('Milestone', milestoneSchema);

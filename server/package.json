@@ -1,7 +1,7 @@
 {
   "name": "goal-galaxy-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Goal tracking backend using Node, Express, Apollo, MongoDB",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,16 @@
     "dev": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Solaryn",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "@apollo/server": "^5.4.0",
+    "apollo-server-express": "^3.13.0",
     "bcrypt": "^6.0.0",
+    "body-parser": "^2.2.2",
     "dotenv": "^17.3.1",
-    "express": "^5.2.1",
+    "express": "^4.18.2",
     "graphql": "^16.13.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.3"

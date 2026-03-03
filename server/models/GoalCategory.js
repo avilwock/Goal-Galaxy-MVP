@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from 'mongoose';
 const {Schema, model} = mongoose;
 
 const goalCategorySchema = new Schema ({
@@ -21,4 +21,4 @@ const goalCategorySchema = new Schema ({
     timestamps: true
 });
 
-module.exports = model('GoalCategory', goalCategorySchema);
+export const GoalCategory = model('GoalCategory', goalCategorySchema);

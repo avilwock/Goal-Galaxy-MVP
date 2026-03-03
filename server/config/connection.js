@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goal-galaxy-MVP', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}
-);
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/goal-galaxy';
 
-module.exports = mongoose.connection;
+const db = mongoose.connection;
+
+mongoose.connect(MONGODB_URI);
+
+export default db;
