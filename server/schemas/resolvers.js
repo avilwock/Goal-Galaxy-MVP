@@ -106,10 +106,11 @@ const resolvers = {
       }
     },
 
-    editGoal: async (_, { goalId, goal_name, description, category, icon, icon_color, target_date, status, progress }) => {
+    editGoal: async (_, { id, goalInput }) => {
       try {
+        const { goal_name, description, category, icon, icon_color, target_date, status, progress} = goalInput;
         const updatedGoal = await Goal.findByIdAndUpdate(
-          goalId,
+          id,
           {
             goal_name,
             description,
@@ -120,7 +121,7 @@ const resolvers = {
             status,
             progress,
           },
-          { new: true }
+          { returnDocument: 'after' }
         );
         if (!updatedGoal) throw new Error('Goal not found');
         return updatedGoal;
@@ -130,15 +131,65 @@ const resolvers = {
       }
     },
 
-    deleteGoal: async (_, { goalId }) => {
+    deleteGoal: async (_, { id }) => {
       try {
-        const deletedGoal = await Goal.findByIdAndDelete(goalId);
+        const deletedGoal = await Goal.findByIdAndDelete(id);
         if (!deletedGoal) throw new Error('Goal not found');
-        return deletedGoal;
+        return true;
       } catch (err) {
         console.error(err);
         throw new Error('Error deleting Goal');
       }
+    },
+
+    addMilestone: async(_, { milestoneInput }) => {
+        try {
+            const { title, goal, description, target_date, completed, order } = milestoneInput;
+            const newMilestone = await Milestone.create({
+                title,
+                goal_id: goal, 
+                description,
+                target_date,
+                completed,
+                order
+            });
+            return newMilestone;
+        } catch (err) {
+            console.error('Mongoose error:', err);
+            throw new Error('Error creating Milestone');
+        }
+    },
+    editMilestone: async(_, {id, milestoneInput}) => {
+        try {
+            const { title, goal, description, target_date, completed, order} = milestoneInput
+            const updatedMilestone = await Milestone.findByIdAndUpdate(
+                id,
+                {
+                    title,
+                    goal_id: goal,
+                    description,
+                    target_date, 
+                    completed, 
+                    order
+                },
+                { new: true }
+            );
+            if (!updatedMilestone) throw new Error('Milestone not found');
+            return updatedMilestone;
+        } catch (err) {
+            console.error(err);
+            throw new Error('Error updating Milestone')
+        }
+    },
+    deleteMilestone: async(_, { id }) => {
+        try {
+            const deletedMilestone = await Milestone.findByIdAndDelete(milestoneId);
+            if (!deletedMilestone) throw new Error('Milestone not found');
+            return deletedMilestone;
+        } catch (err) {
+            console.error(err);
+            throw new Error('Error deleting Milestone')
+        }    
     },
   },
 };

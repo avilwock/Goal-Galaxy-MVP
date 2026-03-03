@@ -16,7 +16,7 @@ const typeDefs = `
     _id: ID!
     goal_name: String!
     description: String
-    // category: GoalCategory
+    # category: GoalCategory
     icon: String
     icon_color: String
     target_date: Date
@@ -71,7 +71,7 @@ const typeDefs = `
   input GoalInput {
     goal_name: String!
     description: String
-    // category_id: ID!
+    # category_id: ID!
     icon: String
     icon_color: String
     target_date: Date
