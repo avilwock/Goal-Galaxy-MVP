@@ -3,6 +3,7 @@ const typeDefs = `
 
   type Query {
     goalCategories: [GoalCategory]
+    goalCategory(id:ID!): GoalCategory
     goals: [Goal]
     milestones: [Milestone]
     tasks: [Task]
@@ -107,8 +108,8 @@ const typeDefs = `
     deleteGoal(id: ID!): Boolean
 
     addGoalCategory(goalCategoryInput: GoalCategoryInput!): GoalCategory
-    editGoalCategory(id: ID!, goalCategoryInput: GoalCategoryInput!): GoalCategory
-    deleteGoalCategory(id: ID!): Boolean
+    editGoalCategory(goalCategoryId: ID!, goalCategoryInput: GoalCategoryInput!): GoalCategory
+    deleteGoalCategory(goalCategoryId: ID!): Boolean
 
     addMilestone(MilestoneInput: MilestoneInput!): Milestone
     editMilestone(id: ID!, milestoneInput: MilestoneInput!): Milestone
