@@ -5,10 +5,12 @@ const goalCategorySchema = new Schema ({
     categoryName: {
         type: String,
         required: true,
+        description: "Category Name"
     },
     icon: {
         type: String,
         required: true,
+        description: "lucide icon name"
     },
     color: {
         type: String,
@@ -17,4 +19,4 @@ const goalCategorySchema = new Schema ({
     timestamps: true
 });
 
-module.exports = model ('goalCategory', goalCategorySchema);
+module.exports = model('GoalCategory', goalCategorySchema);
