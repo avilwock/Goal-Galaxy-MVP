@@ -7,7 +7,7 @@ const resolvers = {
   Query: {
     goals: async () => {
       try {
-        return await Goal.find().populate('category_id');
+        return await Goal.find(); //add back with .populate('category_id')
       } catch (err) {
         console.error(err);
         throw new Error('Error fetching goals');
@@ -16,83 +16,83 @@ const resolvers = {
 
     goal: async (_, { id }) => {
       try {
-        return await Goal.findById(id).populate('category_id');
+        return await Goal.findById(id); //add back .populate('category_id')
       } catch (err) {
         console.error(err);
         throw new Error('Goal not found');
       }
     },
 
-    goalCategories: async() => {
-        try {
-            return await GoalCategory.find();
-        } catch (err) {
-            console.error(err);
-            throw new Error('Error fetching goal categories');
-        }
-    },
+    // goalCategories: async() => {
+    //     try {
+    //         return await GoalCategory.find();
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw new Error('Error fetching goal categories');
+    //     }
+    // },
 
-    goalCategory: async (_, { id }) => {
-        try {
-            return await GoalCategory.findById(id).populate('goalCategory_id');
-        } catch (err) {
-            throw new Error('Goal Category not Found')
-        }
-    }
+    // goalCategory: async (_, { id }) => {
+    //     try {
+    //         return await GoalCategory.findById(id).populate('goalCategory_id');
+    //     } catch (err) {
+    //         throw new Error('Goal Category not Found')
+    //     }
+    // }
   },
 
   Mutation: {
 
-    addGoalCategory: async(_, { goalCategoryInput }) => {
-         const { category_name, icon, color } = goalCategoryInput;
-        try {
-           const newGoalCategory = await GoalCategory.create({
-                category_name,
-                icon,
-                color
-            });
-            return newGoalCategory;
-        } catch (err) {
-            console.error(err);
-            throw new Error('Error creating Goal Category');
-        }
-    },
-    editGoalCategory: async(_, { goalCategoryId, goalCategoryInput }) => {
-        const { category_name, icon, color } = goalCategoryInput;
-        try {
-            const updatedGoalCategory = await GoalCategory.findByIdAndUpdate(
-                goalCategoryId, 
-                {
-                    goal_name,
-                    icon,
-                    color
-                },
-                {new: true}
-            );
-            if (!updatedGoalCategory) throw new Error('GoalCategory not Found');
-            return updatedGoalCategory;
-        } catch (err) {
-            console.error(err);
-            throw new Error('Error updating Goal Category');
-        }
-    },
-    deleteGoalCategory: async(_, { goalCategoryId }) => {
-        try {
-            const deletedGoalCategory = await GoalCategory.findByIdAndDelete(goalCategoryId);
-            if(!deletedGoalCategory) throw new Error('GoalCategory not Found');
-            return true;
-        } catch (err) {
-            console.error(err);
-            return false;
-        }
-    },
+    // addGoalCategory: async(_, { goalCategoryInput }) => {
+    //      const { category_name, icon, color } = goalCategoryInput;
+    //     try {
+    //        const newGoalCategory = await GoalCategory.create({
+    //             category_name,
+    //             icon,
+    //             color
+    //         });
+    //         return newGoalCategory;
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw new Error('Error creating Goal Category');
+    //     }
+    // },
+    // editGoalCategory: async(_, { goalCategoryId, goalCategoryInput }) => {
+    //     const { category_name, icon, color } = goalCategoryInput;
+    //     try {
+    //         const updatedGoalCategory = await GoalCategory.findByIdAndUpdate(
+    //             goalCategoryId, 
+    //             {
+    //                 goal_name,
+    //                 icon,
+    //                 color
+    //             },
+    //             {new: true}
+    //         );
+    //         if (!updatedGoalCategory) throw new Error('GoalCategory not Found');
+    //         return updatedGoalCategory;
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw new Error('Error updating Goal Category');
+    //     }
+    // },
+    // deleteGoalCategory: async(_, { goalCategoryId }) => {
+    //     try {
+    //         const deletedGoalCategory = await GoalCategory.findByIdAndDelete(goalCategoryId);
+    //         if(!deletedGoalCategory) throw new Error('GoalCategory not Found');
+    //         return true;
+    //     } catch (err) {
+    //         console.error(err);
+    //         return false;
+    //     }
+    // },
     addGoal: async (_, { goalInput }) => {
       try {
         const { goal_name, description, category, icon, icon_color, target_date, status, progress } = goalInput;
         const newGoal = await Goal.create({
           goal_name,
           description,
-          category_id: category,
+        //   category_id: category,
           icon,
           icon_color,
           target_date,
@@ -113,7 +113,7 @@ const resolvers = {
           {
             goal_name,
             description,
-            category_id: category,
+            // category_id: category,
             icon,
             icon_color,
             target_date,
@@ -139,14 +139,6 @@ const resolvers = {
         console.error(err);
         throw new Error('Error deleting Goal');
       }
-    },
-  },
-
-  // Optional: if you want nested Goal.category field resolution
-  Goal: {
-    category: async (parent) => {
-      if (!parent.category_id) return null;
-      return await GoalCategory.findById(parent.category_id);
     },
   },
 };
