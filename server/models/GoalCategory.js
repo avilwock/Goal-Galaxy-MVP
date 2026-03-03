@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 const {Schema, model} = mongoose;
 
 const goalCategorySchema = new Schema ({
-    categoryName: {
+    category_name: {
         type: String,
         required: true,
         description: "Category Name"
@@ -16,6 +16,8 @@ const goalCategorySchema = new Schema ({
         type: String,
         description: "Category color (hex or tailwind)"
     },
+},
+    {
     timestamps: true
 });
 
