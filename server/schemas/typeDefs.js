@@ -36,6 +36,7 @@ const typeDefs = `
   type Milestone {
     _id: ID!
     title: String!
+    goal_id: ID!
     goal: Goal
     description: String
     target_date: Date
@@ -112,7 +113,7 @@ const typeDefs = `
     deleteGoalCategory(goalCategoryId: ID!): Boolean
 
     addMilestone(MilestoneInput: MilestoneInput!): Milestone
-    editMilestone(id: ID!, milestoneInput: MilestoneInput!): Milestone
+    editMilestone(id: ID!, MilestoneInput: MilestoneInput!): Milestone
     deleteMilestone(id: ID!): Boolean
 
     addTask(taskInput: TaskInput!): Task

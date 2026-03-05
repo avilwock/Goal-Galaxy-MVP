@@ -22,6 +22,15 @@ const resolvers = {
         throw new Error('Goal not found');
       }
     },
+    milestones: async() => {
+      try {
+        return await Milestone.find();
+      } catch (err) {
+        console.error(err);
+        throw new Error ('Error fetching Milestones')
+      }
+    },
+    
 
     // goalCategories: async() => {
     //     try {
@@ -142,12 +151,12 @@ const resolvers = {
       }
     },
 
-    addMilestone: async(_, { milestoneInput }) => {
+    addMilestone: async(_, { MilestoneInput }) => {
         try {
-            const { title, goal, description, target_date, completed, order } = milestoneInput;
+            const { title, goal_id, description, target_date, completed, order } = MilestoneInput;
             const newMilestone = await Milestone.create({
                 title,
-                goal_id: goal, 
+                goal_id, 
                 description,
                 target_date,
                 completed,
@@ -159,9 +168,9 @@ const resolvers = {
             throw new Error('Error creating Milestone');
         }
     },
-    editMilestone: async(_, {id, milestoneInput}) => {
+    editMilestone: async(_, {id, MilestoneInput}) => {
         try {
-            const { title, goal, description, target_date, completed, order} = milestoneInput
+            const { title, goal, description, target_date, completed, order} = MilestoneInput
             const updatedMilestone = await Milestone.findByIdAndUpdate(
                 id,
                 {
@@ -183,7 +192,7 @@ const resolvers = {
     },
     deleteMilestone: async(_, { id }) => {
         try {
-            const deletedMilestone = await Milestone.findByIdAndDelete(milestoneId);
+            const deletedMilestone = await Milestone.findByIdAndDelete(id);
             if (!deletedMilestone) throw new Error('Milestone not found');
             return deletedMilestone;
         } catch (err) {
@@ -192,6 +201,15 @@ const resolvers = {
         }    
     },
   },
+  Milestone: {
+      goal: async(parent) => {
+        if(!parent.goal_id) return null;
+        return await Goal.findById(parent.goal_id);
+      }
+    }
+
 };
+
+
 
 export default resolvers;
