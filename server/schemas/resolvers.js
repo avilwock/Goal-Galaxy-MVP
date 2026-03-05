@@ -30,7 +30,13 @@ const resolvers = {
         throw new Error ('Error fetching Milestones')
       }
     },
-    
+    tasks: async() => {
+      try {
+        return await Task.find();
+      } catch (err) {
+        throw new Error('Error fetching Tasks')
+      }
+    }
 
     // goalCategories: async() => {
     //     try {
@@ -190,23 +196,56 @@ const resolvers = {
             throw new Error('Error updating Milestone')
         }
     },
-    deleteMilestone: async(_, { id }) => {
-        try {
-            const deletedMilestone = await Milestone.findByIdAndDelete(id);
-            if (!deletedMilestone) throw new Error('Milestone not found');
-            return deletedMilestone;
-        } catch (err) {
-            console.error(err);
-            throw new Error('Error deleting Milestone')
-        }    
-    },
-  },
-  Milestone: {
-      goal: async(parent) => {
-        if(!parent.goal_id) return null;
-        return await Goal.findById(parent.goal_id);
-      }
+   deleteMilestone: async(_, { id }) => {
+    try {
+    const deletedMilestone = await Milestone.findByIdAndDelete(id);
+    if (!deletedMilestone) throw new Error('Milestone not found');
+    return true;
+    } catch (err) {
+      console.error("Delete milestone error:", err);
+      throw new Error('Error deleting Milestone');
     }
+  },
+  addTask: async(_, { TaskInput }) => {
+        try {
+            const { title, description, goal_id, milestone_id, due_date, due_time, priority, recurrence, recurrence_days, recurrence_end_date, completed } = TaskInput;
+            const newTask = await Task.create({
+                title, 
+                description, 
+                goal_id, 
+                milestone_id, 
+                due_date, 
+                due_time, 
+                priority, 
+                recurrence, 
+                recurrence_days, 
+                recurrence_end_date, 
+                completed
+            });
+            return newTask;
+        } catch (err) {
+            console.error('Mongoose error:', err);
+            throw new Error('Error creating Task');
+        }
+    },
+},
+  Milestone: {
+    goal: async(parent) => {
+      if(!parent.goal_id) return null;
+      return await Goal.findById(parent.goal_id);
+    },
+    tasks: async(parent) => {
+      return await Task.find({milestone_id: parent._id});
+    }
+  },
+  Goal: {
+    milestones: async(parent) => {
+      return await Milestone.find({goal_id: parent._id})
+    },
+    tasks: async(parent) => {
+      return await Task.find({goal_id: parent._id})
+    } 
+  }
 
 };
 

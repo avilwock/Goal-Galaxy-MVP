@@ -16,6 +16,8 @@ const typeDefs = `
     _id: ID!
     goal_name: String!
     description: String
+    milestones: [Milestone]
+    tasks: [Task]
     # category: GoalCategory
     icon: String
     icon_color: String
@@ -41,6 +43,7 @@ const typeDefs = `
     description: String
     target_date: Date
     completed: Boolean
+    tasks: [Task]
     order: Int
     createdAt: Date
     updatedAt: Date
@@ -110,14 +113,14 @@ const typeDefs = `
 
     addGoalCategory(goalCategoryInput: GoalCategoryInput!): GoalCategory
     editGoalCategory(goalCategoryId: ID!, goalCategoryInput: GoalCategoryInput!): GoalCategory
-    deleteGoalCategory(goalCategoryId: ID!): Boolean
+    deleteGoalCategory(id: ID!): Boolean
 
     addMilestone(MilestoneInput: MilestoneInput!): Milestone
     editMilestone(id: ID!, MilestoneInput: MilestoneInput!): Milestone
     deleteMilestone(id: ID!): Boolean
 
-    addTask(taskInput: TaskInput!): Task
-    editTask(id: ID!, taskInput: TaskInput!): Task
+    addTask(TaskInput: TaskInput!): Task
+    editTask(id: ID!, TaskInput: TaskInput!): Task
     deleteTask(id: ID!): Boolean
   }
 `;
