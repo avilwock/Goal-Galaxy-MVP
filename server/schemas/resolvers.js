@@ -30,77 +30,35 @@ const resolvers = {
         throw new Error ('Error fetching Milestones')
       }
     },
+    milestone: async(_, { id }) => {
+      try {
+        return await Milestone.findById(id);
+      } catch (err) {
+        console.error(err);
+        throw new Error('Milestone not found')
+      }
+    },
     tasks: async() => {
       try {
         return await Task.find();
       } catch (err) {
         throw new Error('Error fetching Tasks')
       }
+    },
+    task: async(_, { id }) => {
+      try {
+        return await Task.findById(id);
+      } catch (err) {
+        console.error(err);
+        throw new Error('Task no found')
+      }
     }
 
-    // goalCategories: async() => {
-    //     try {
-    //         return await GoalCategory.find();
-    //     } catch (err) {
-    //         console.error(err);
-    //         throw new Error('Error fetching goal categories');
-    //     }
-    // },
-
-    // goalCategory: async (_, { id }) => {
-    //     try {
-    //         return await GoalCategory.findById(id).populate('goalCategory_id');
-    //     } catch (err) {
-    //         throw new Error('Goal Category not Found')
-    //     }
-    // }
+ 
   },
 
   Mutation: {
 
-    // addGoalCategory: async(_, { goalCategoryInput }) => {
-    //      const { category_name, icon, color } = goalCategoryInput;
-    //     try {
-    //        const newGoalCategory = await GoalCategory.create({
-    //             category_name,
-    //             icon,
-    //             color
-    //         });
-    //         return newGoalCategory;
-    //     } catch (err) {
-    //         console.error(err);
-    //         throw new Error('Error creating Goal Category');
-    //     }
-    // },
-    // editGoalCategory: async(_, { goalCategoryId, goalCategoryInput }) => {
-    //     const { category_name, icon, color } = goalCategoryInput;
-    //     try {
-    //         const updatedGoalCategory = await GoalCategory.findByIdAndUpdate(
-    //             goalCategoryId, 
-    //             {
-    //                 goal_name,
-    //                 icon,
-    //                 color
-    //             },
-    //             {new: true}
-    //         );
-    //         if (!updatedGoalCategory) throw new Error('GoalCategory not Found');
-    //         return updatedGoalCategory;
-    //     } catch (err) {
-    //         console.error(err);
-    //         throw new Error('Error updating Goal Category');
-    //     }
-    // },
-    // deleteGoalCategory: async(_, { goalCategoryId }) => {
-    //     try {
-    //         const deletedGoalCategory = await GoalCategory.findByIdAndDelete(goalCategoryId);
-    //         if(!deletedGoalCategory) throw new Error('GoalCategory not Found');
-    //         return true;
-    //     } catch (err) {
-    //         console.error(err);
-    //         return false;
-    //     }
-    // },
     addGoal: async (_, { goalInput }) => {
       try {
         const { goal_name, description, category, icon, icon_color, target_date, status, progress } = goalInput;
@@ -228,6 +186,43 @@ const resolvers = {
             throw new Error('Error creating Task');
         }
     },
+  editTask: async(_, {id, TaskInput}) => {
+        try {
+            const { title, description, goal, milestone, due_date, due_time, priority, recurrence, recurrence_days, recurrence_end_date, completed} = TaskInput
+            const updatedTask = await Task.findByIdAndUpdate(
+                id,
+                {
+                    title,
+                    description,
+                    milestone_id: milestone,
+                    goal_id: goal,
+                    due_date,
+                    due_time,
+                    priority,
+                    recurrence,
+                    recurrence_days,
+                    recurrence_end_date,
+                    completed
+                },
+                { new: true }
+            );
+            if (!updatedTask) throw new Error('Task not found');
+            return updatedTask;
+        } catch (err) {
+            console.error(err);
+            throw new Error('Error updating Task')
+        }
+    },
+   deleteTask: async(_, { id }) => {
+    try {
+    const deletedTask = await Task.findByIdAndDelete(id);
+    if (!deletedTask) throw new Error('Task not found');
+    return true;
+    } catch (err) {
+      console.error("Delete Task error:", err);
+      throw new Error('Error deleting Task');
+    }
+  },  
 },
   Milestone: {
     goal: async(parent) => {
@@ -252,3 +247,64 @@ const resolvers = {
 
 
 export default resolvers;
+
+   // goalCategories: async() => {
+    //     try {
+    //         return await GoalCategory.find();
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw new Error('Error fetching goal categories');
+    //     }
+    // },
+
+    // goalCategory: async (_, { id }) => {
+    //     try {
+    //         return await GoalCategory.findById(id).populate('goalCategory_id');
+    //     } catch (err) {
+    //         throw new Error('Goal Category not Found')
+    //     }
+    // }
+
+    // addGoalCategory: async(_, { goalCategoryInput }) => {
+    //      const { category_name, icon, color } = goalCategoryInput;
+    //     try {
+    //        const newGoalCategory = await GoalCategory.create({
+    //             category_name,
+    //             icon,
+    //             color
+    //         });
+    //         return newGoalCategory;
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw new Error('Error creating Goal Category');
+    //     }
+    // },
+    // editGoalCategory: async(_, { goalCategoryId, goalCategoryInput }) => {
+    //     const { category_name, icon, color } = goalCategoryInput;
+    //     try {
+    //         const updatedGoalCategory = await GoalCategory.findByIdAndUpdate(
+    //             goalCategoryId, 
+    //             {
+    //                 goal_name,
+    //                 icon,
+    //                 color
+    //             },
+    //             {new: true}
+    //         );
+    //         if (!updatedGoalCategory) throw new Error('GoalCategory not Found');
+    //         return updatedGoalCategory;
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw new Error('Error updating Goal Category');
+    //     }
+    // },
+    // deleteGoalCategory: async(_, { goalCategoryId }) => {
+    //     try {
+    //         const deletedGoalCategory = await GoalCategory.findByIdAndDelete(goalCategoryId);
+    //         if(!deletedGoalCategory) throw new Error('GoalCategory not Found');
+    //         return true;
+    //     } catch (err) {
+    //         console.error(err);
+    //         return false;
+    //     }
+    // },
