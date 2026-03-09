@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-const TASK_FIELDS = gql`
+export const TASK_FIELDS = gql`
     fragment TaskFields on Task {
         _id
         completed
@@ -11,10 +11,7 @@ const TASK_FIELDS = gql`
     }`
 
 
-const MILESTONE_FIELDS = gql`
-    ${TASK_FIELDS
-
-    }
+export const MILESTONE_FIELDS = gql`
     fragment MilestoneFields on Milestone {
         _id
         title
@@ -22,11 +19,28 @@ const MILESTONE_FIELDS = gql`
         target_date
         completed
         order
-        tasks
-        {
+        tasks {
             ...TaskFields
         }
     }`
+
+export const GOAL_FIELDS = gql`
+    fragment GoalFields on Goal {
+    _id
+    goal_name
+    description
+    icon
+    icon_color
+    target_date
+    status
+    progress
+    milestones {
+        ...MilestoneFields
+    }
+    tasks {
+        ...TaskFields
+    }
+}`
 
 export const QUERY_GOAL = gql`
 ${TASK_FIELDS}
