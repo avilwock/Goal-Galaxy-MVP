@@ -12,7 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^17.3.1"
+    "@apollo/client": "^4.1.6",
+    "dotenv": "^17.3.1",
+    "graphql": "^16.13.1"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
