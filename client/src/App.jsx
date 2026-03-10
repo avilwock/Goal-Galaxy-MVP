@@ -1,14 +1,15 @@
-// import React, { useState } from 'react';
-import TestGoal from './components/TestGoal';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import GoalsList from './components/GoalsList';
+// import TestGoal from './components/TestGoal';
+import GoalPage from './pages/GoalPage'
 
 function App() {
-  const testGoalId = '69a8f056ad9314780b8d40e0';
-
   return (
-    <div className="App">
-      <h1>Goal Test</h1>
-      <TestGoal goalId={testGoalId} />
-    </div>
+    <Routes>
+      <Route path="/" element={<GoalsList />} />
+      <Route path="/goal/:id" element={<GoalPage />}/>
+    </Routes>
   );
 }
 

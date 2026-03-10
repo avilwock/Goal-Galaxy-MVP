@@ -3,11 +3,15 @@ import { gql } from '@apollo/client';
 export const TASK_FIELDS = gql`
     fragment TaskFields on Task {
         _id
-        completed
+        title
         description
         due_date
-        recurrence_pattern
-        title
+        due_time
+        priority
+        recurrence
+        recurrence_days
+        recurrence_end_date
+        completed
     }`
 
 
@@ -62,5 +66,26 @@ query goal($id: ID!) {
     tasks {
     ...TaskFields
     }
+    }
+}`
+
+export const QUERY_GOALS = gql`
+${TASK_FIELDS}
+${MILESTONE_FIELDS}
+query goals {
+    goals {
+        _id
+        goal_name
+        description
+        icon_color
+        target_date
+        status
+        progress
+        milestones {
+            ...MilestoneFields
+        }
+        tasks {
+            ...TaskFields
+        }
     }
 }`
