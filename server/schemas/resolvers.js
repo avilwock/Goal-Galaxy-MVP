@@ -16,7 +16,7 @@ const resolvers = {
 
     goal: async (_, { id }) => {
       try {
-        return await Goal.findById(id); //add back .populate('category_id')
+        return await Goal.findById(id).populate('tasks'); //add back .populate('category_id')
       } catch (err) {
         console.error(err);
         throw new Error('Goal not found');

@@ -49,43 +49,53 @@ export const GOAL_FIELDS = gql`
 export const QUERY_GOAL = gql`
 ${TASK_FIELDS}
 ${MILESTONE_FIELDS}
-
+${GOAL_FIELDS}
 query goal($id: ID!) {
     goal(id: $id) {
-    _id
-    goal_name
-    description
-    icon
-    icon_color
-    target_date
-    status
-    progress
-    milestones {
-        ...MilestoneFields
-    }
-    tasks {
-    ...TaskFields
-    }
+        ...GoalFields
     }
 }`
 
 export const QUERY_GOALS = gql`
 ${TASK_FIELDS}
 ${MILESTONE_FIELDS}
+${GOAL_FIELDS}
 query goals {
     goals {
-        _id
-        goal_name
-        description
-        icon_color
-        target_date
-        status
-        progress
-        milestones {
-            ...MilestoneFields
-        }
-        tasks {
-            ...TaskFields
-        }
+        ...GoalFields
+    }
+}`
+
+export const QUERY_MILESTONE = gql`
+${TASK_FIELDS}
+${MILESTONE_FIELDS}
+query milestone($id: ID!) {
+    milestone(id:$id) {
+        ...MilestoneFields
+    }
+}`
+
+export const QUERY_MILESTONES = gql`
+${TASK_FIELDS}
+${MILESTONE_FIELDS}
+query milestones {
+    milestones {
+        ...MilestoneFields
+    }
+}`
+
+export const QUERY_TASK = gql`
+${TASK_FIELDS}
+query task($id: ID!) {
+    task(id:$id) {
+        ...TaskFields
+    }
+}`
+
+export const QUERY_TASKS = gql`
+${TASK_FIELDS}
+query tasks {
+    tasks {
+        ...TaskFields
     }
 }`

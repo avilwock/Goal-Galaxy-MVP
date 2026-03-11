@@ -41,6 +41,10 @@ const goalSchema = new Schema ({
     max: 100,
     description: "progress percentage 0-100"
   },
+  tasks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Task'
+  }]
 },
 { 
     timestamps: true 
