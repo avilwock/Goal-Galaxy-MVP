@@ -2,7 +2,8 @@ import { useQuery } from '@apollo/client/react';
 import { QUERY_GOALS } from '../utils/queries';
 import { useNavigate } from 'react-router-dom';
 import GoalIcon from '../components/GoalIcon';
-
+import StatusIcon from '../components/StatusIcon';
+import ProgressBar from '../components/ProgressBar'
 
 // Frontend mapping: backend strings → Lucide components
 
@@ -22,6 +23,7 @@ const GoalsList = () => {
         // Normalize backend string
         
         return (
+                
           <button
             key={goal._id}
             onClick={() => navigate(`/goal/${goal._id}`)}
@@ -32,8 +34,16 @@ const GoalsList = () => {
             size="medium"
             color={goal.icon_color}
             >
+            
           </GoalIcon>
+          
+          <p>Status: <StatusIcon status={goal.status} />
+            </p>
             {goal.goal_name || 'No Name'}
+          
+          <ProgressBar milestones = {goal.milestones}/>
+           <div className="flex items-center justify-center min-h-screen bg-gray-800">
+    </div>
           
           </button>
         );
