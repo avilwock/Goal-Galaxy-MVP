@@ -19,9 +19,9 @@ const GoalPage = () => {
   return (
     <div>
       <div>
+        <p>{goal.icon}</p>
         <h2>{goal.goal_name}</h2>
         <p>{goal.description}</p>
-        <p>{goal.icon}</p>
         <p>{goal.icon_color}</p>
         <p>{goal.target_date}</p>
         <p>Status: {goal.status}</p>
