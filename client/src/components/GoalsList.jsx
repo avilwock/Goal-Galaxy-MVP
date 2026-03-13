@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client/react';
 import { QUERY_GOALS } from '../utils/queries';
 import { useNavigate } from 'react-router-dom';
-import GoalIcon from '../components/GoalIcon'
+import GoalIcon from '../components/GoalIcon';
 
 
 // Frontend mapping: backend strings → Lucide components
@@ -29,7 +29,7 @@ const GoalsList = () => {
           >
             <GoalIcon
             name = {goal.icon}
-            size="large"
+            size="medium"
             color={goal.icon_color}
             >
           </GoalIcon>

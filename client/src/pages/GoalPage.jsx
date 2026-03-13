@@ -1,6 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { QUERY_GOAL } from "../utils/queries";
+import GoalIcon from '../components/GoalIcon'
+import { formatDate } from '../utils/date';
 
 const GoalPage = () => {
   const { id } = useParams();
@@ -19,35 +21,40 @@ const GoalPage = () => {
   return (
     <div>
       <div>
-        <p>{goal.icon}</p>
+        <GoalIcon
+            name = {goal.icon}
+            size="large"
+            color={goal.icon_color}
+            >
+        </GoalIcon>
         <h2>{goal.goal_name}</h2>
         <p>{goal.description}</p>
-        <p>{goal.icon_color}</p>
-        <p>{goal.target_date}</p>
+        <p>Target Date: {formatDate(goal.target_date)}</p>
         <p>Status: {goal.status}</p>
         <p>{goal.progress}</p>
       </div>
-      
+      <div style= {{border: '2px solid black'}}>
       {goal.tasks?.map(task => (
         <div key={task._id}>
           {task.title}
           {task.description}
-          {task.due_date}
+          {formatDate(task.due_date)}
           {task.due_time}
           {task.priority}
           {task.recurrence}
           {task.recurrence_days}
           {task.recurrence_end_date}
           {task.completed}
-        </div>
+        </div>    
       ))}
-        <div>
+      </div>
+        <div style ={{border: '2px solid black'}}>
         {goal.milestones?.map(milestone => (
           <div key={milestone._id}>
             {milestone.title}
             {milestone.description}
             {milestone.target_date}
-            {milestone.completed}
+            {formatDate(milestone.completed)}
             {milestone.order}
           </div>
         ))}

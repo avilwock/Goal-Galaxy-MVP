@@ -27,7 +27,6 @@ const goalSchema = new Schema ({
     target_date: {
         type: Date,
         description: "target completion date"
-
     },
     status: {
     type: String,
