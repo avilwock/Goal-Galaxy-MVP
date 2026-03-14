@@ -44,7 +44,7 @@ const ProgressBar = ({ milestones }) => {
           textAlign: 'right',
         }}
       >
-        {progress}%
+        {/* {progress}% */}
       </div>
     </div>
   );

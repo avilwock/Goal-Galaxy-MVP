@@ -14,39 +14,39 @@ const GoalsList = () => {
 
   return (
     <div>
-      <h1>Goals</h1>
+      <h1 className="text-6xl m-8 place-self-center">Goals</h1>
 
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-6">
         {data.goals.map((goal) => {
           return (
             <button
               key={goal._id}
               onClick={() => navigate(`/goal/${goal._id}`)}
-              className="flex flex-col p-4 border rounded-lg w-48"
+              className="flex flex-col justify-between p-4 border rounded-lg w-64 bg-gray-900 text-white"
             >
 
-              {/* top row */}
-              <div className="flex justify-between items-start w-full">
-                <GoalIcon
-                  name={goal.icon}
-                  size="medium"
-                  color={goal.icon_color}
-                />
-
+              {/* Top row: icon + status */}
+              <div className="flex justify-between items-start mb-2">
+                <div className="p-2 bg-gray-800 rounded">
+                  <GoalIcon name={goal.icon} size="medium" color={goal.icon_color} />
+                </div>
                 <StatusIcon status={goal.status} />
               </div>
 
-              {/* title */}
-              <div className="text-center text-lg font-medium mt-2">
+              {/* Title row */}
+              <div className="text-left font-semibold text-lg mb-15 place-self-center">
                 {goal.goal_name || 'No Name'}
               </div>
 
-              {/* progress */}
-              <div className="mt-4 w-full">
+              {/* Progress bar row */}
+              <div className="flex flex-col">
+                <div className="w-full mb-1"></div>
                 <ProgressBar milestones={goal.milestones} />
+                {/* Optional: metadata like "0/1 tasks" */}
+                <div className="text-xs text-gray-400 mt-1">0/0 tasks</div>
               </div>
 
-            </button>
+            </button> 
           );
         })}
       </div>

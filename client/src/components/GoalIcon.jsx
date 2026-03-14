@@ -13,7 +13,7 @@ const iconMap = {
 
 const sizeMap= {
     small: 14,
-    medium: 40,
+    medium: 32,
     large: 32
 };
 
