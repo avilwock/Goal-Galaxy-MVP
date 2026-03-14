@@ -26,15 +26,15 @@ const GoalsList = () => {
             >
 
               {/* Top row: icon + status */}
-              <div className="flex justify-between items-start mb-2">
-                <div className="p-2 bg-gray-800 rounded">
+              <div className="flex justify-between items-start">
+                <div className="p-2 bg-gray-950 rounded">
                   <GoalIcon name={goal.icon} size="medium" color={goal.icon_color} />
                 </div>
                 <StatusIcon status={goal.status} />
               </div>
 
               {/* Title row */}
-              <div className="text-left font-semibold text-lg mb-15 place-self-center">
+              <div className="text-left font-semibold text-lg mb-18 place-self-center top-">
                 {goal.goal_name || 'No Name'}
               </div>
 

@@ -1,11 +1,10 @@
 import React from 'react';
 
 const ProgressBar = ({ milestones }) => {
-  if (!milestones || milestones.length === 0) return null; // no milestones
+  const total = milestones?.length || 0;
+  const completed = milestones?.filter(m => m.completed).length || 0;
+  const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
 
-  // 1️⃣ Calculate completed percentage
-  const completed = milestones.filter(m => m.completed).length;
-  const progress = Math.round((completed / milestones.length) * 100);
 
   return (
     <div
