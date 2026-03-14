@@ -2,12 +2,25 @@ import { gql } from '@apollo/client';
 import { TASK_FIELDS, MILESTONE_FIELDS, GOAL_FIELDS } from './queries.js';
 
 export const ADD_GOAL = gql`
-${GOAL_FIELDS}
-    mutation addGoal($input: GoalInput!) {
-        addGoal( input: $input) {
-            ...GoalFields
+  mutation addGoal($goalInput: GoalInput!) {
+    addGoal(goalInput: $goalInput) {
+      _id
+      goal_name
+      description
+      icon
+      icon_color
+      target_date
+      status
+      progress
+      milestones {
+        _id
         }
-    }`
+      tasks {
+        _id
+      }
+    }
+  }
+`;
 
 export const EDIT_GOAL = gql`
 ${GOAL_FIELDS}
