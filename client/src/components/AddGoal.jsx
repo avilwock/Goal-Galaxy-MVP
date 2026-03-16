@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useMutation } from '@apollo/client/react';
 import { ADD_GOAL } from '../utils/mutations';
 import { QUERY_GOALS } from '../utils/queries';
+import GoalIcon, { ICON_KEYS} from './GoalIcon';
 
 const AddGoalForm = () => {
   const [goal_name, setGoalName] = useState('');
@@ -9,6 +10,8 @@ const AddGoalForm = () => {
   const [icon, setIcon] = useState('');
   const [iconColor, setIconColor] = useState('');
   const [targetDate, setTargetDate] = useState('');
+  const [open, setOpen] = useState(false);
+  const containerRef=useRef();
 
   const [addGoal ] = useMutation(ADD_GOAL, {
     update(cache, { data: { addGoal } }) {
@@ -48,9 +51,19 @@ const AddGoalForm = () => {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <form onSubmit={handleSubmit} className="bg-gray-100 p-6 rounded shadow-md max-w-md mx-auto my-4">
-  <h2 className="text-2xl font-bold mb-4 text-gray-800">Add a New Goal</h2>
+  <h2 className="text-2xl font-bold mb-4 text-gray-800 place-self-center">Add a New Goal</h2>
 
   <div className="mb-4">
     <label htmlFor="goal-name" className="block font-semibold mb-1 text-gray-700">
@@ -62,7 +75,7 @@ const AddGoalForm = () => {
       placeholder="Enter your goal title"
       value={goal_name}
       onChange={(e) => setGoalName(e.target.value)}
-      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
       required
     />
   </div>
@@ -76,24 +89,39 @@ const AddGoalForm = () => {
       placeholder="Optional description"
       value={description}
       onChange={(e) => setDescription(e.target.value)}
-      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
     />
   </div>
+<div className="mb-4 relative" ref={containerRef}>
+        <label className="block font-semibold mb-2 text-gray-700">Icon</label>
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          className="w-full h-10 border rounded flex items-center justify-center bg-white"
+        >
+          {icon ? <GoalIcon name={icon} size="medium" /> : 'Select Icon'}
+        </button>
 
-  <div className="mb-4">
-    <label htmlFor="icon" className="block font-semibold mb-1 text-gray-700">
-      Icon Name
-    </label>
-    <input
-      id="icon"
-      type="text"
-      placeholder="e.g., star, trophy"
-      value={icon}
-      onChange={(e) => setIcon(e.target.value)}
-      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-  </div>
-
+        {open && (
+          <div className="absolute z-10 mt-1 w-full max-h-48 overflow-y-auto border rounded bg-white grid grid-cols-4 gap-2 p-2">
+            {ICON_KEYS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => {
+                  setIcon(key);
+                  setOpen(false);
+                }}
+                className={`p-2 rounded hover:bg-gray-100 flex justify-center items-center ${
+                  icon === key ? 'bg-blue-100 border-blue-500' : ''
+                }`}
+              >
+                <GoalIcon name={key} size="medium" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
   <div className="mb-4">
     <label htmlFor="icon-color" className="block font-semibold mb-1 text-gray-700">
       Icon Color
@@ -104,7 +132,7 @@ const AddGoalForm = () => {
       placeholder="e.g., red, blue"
       value={iconColor}
       onChange={(e) => setIconColor(e.target.value)}
-      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
     />
   </div>
 
@@ -117,7 +145,7 @@ const AddGoalForm = () => {
       type="date"
       value={targetDate}
       onChange={(e) => setTargetDate(e.target.value)}
-      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
     />
   </div>
 
