@@ -5,7 +5,8 @@ import { QUERY_GOALS } from '../utils/queries';
 import GoalIcon, { ICON_KEYS} from './GoalIcon';
 import ICON_COLORS  from './IconColors';
 
-const AddGoalForm = () => {
+
+const AddGoalForm = ({setShowForm}) => {
   const [goal_name, setGoalName] = useState('');
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('');
@@ -47,6 +48,7 @@ const AddGoalForm = () => {
       setIcon('');
       setIconColor('');
       setTargetDate('');
+      setShowForm(false)
     } catch (err) {
       console.error(err);
     }
@@ -63,7 +65,15 @@ const AddGoalForm = () => {
   }, []);
 
   return (
+    
     <form onSubmit={handleSubmit} className="bg-gray-100 p-6 rounded shadow-md max-w-md mx-auto my-4">
+      <button
+        type="button"
+        onClick={() => setShowForm(false)}
+        className="absolute top-2 right-2 text-gray-600 text-xl"
+      >
+        ✕
+      </button>
   <h2 className="text-2xl font-bold mb-4 text-gray-800 place-self-center">Add a New Goal</h2>
 
   <div className="mb-4">

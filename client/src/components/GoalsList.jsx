@@ -22,16 +22,36 @@ const GoalsList = () => {
       <div className="flex flex-wrap gap-6">
         Add Goal button
       <button
-        onClick={() => setShowForm(!showForm)}
+        onClick={() => setShowForm(true)}
         className="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600"
       >
-        {showForm ? 'Cancel' : 'Add New Goal'}
+        
+        Add New Goal
       </button>
+      {showForm && (
+        <>
+          {/* Transparent backdrop blocks clicks behind modal */}
+          <div className="fixed inset-0 z-40" />
 
-      {/* Form appears when showForm is true */}
-      {showForm && <AddGoal/>}
+          {/* Modal container */}
+          <div className="fixed inset-0 flex items-center justify-center z-50">
+            <div className="relative bg-gray-100 p-6 rounded shadow-md max-w-md w-full">
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                className="absolute top-2 right-2 text-gray-600 text-xl font-bold"
+              >
+                ✕
+              </button>
 
-      {/* Your existing goals list rendering */}
+              {/* Your form */}
+              <AddGoal setShowForm={setShowForm} />
+            </div>
+          </div>
+        </>
+      )}
+       {/* Your existing goals list rendering */}
       <div className="mt-4">
         {/* Example: */}
         {/* {goals.map(goal => <GoalCard key={goal._id} goal={goal} />)} */}
