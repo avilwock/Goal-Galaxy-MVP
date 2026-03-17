@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client/react';
 import { ADD_GOAL } from '../utils/mutations';
 import { QUERY_GOALS } from '../utils/queries';
 import GoalIcon, { ICON_KEYS} from './GoalIcon';
+import ICON_COLORS  from './IconColors';
 
 const AddGoalForm = () => {
   const [goal_name, setGoalName] = useState('');
@@ -92,6 +93,12 @@ const AddGoalForm = () => {
       className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
     />
   </div>
+  <div className="mb-4">
+  <label className="block font-semibold mb-2 text-gray-700">Preview</label>
+  <div className="w-16 h-16 flex items-center justify-center rounded-lg shadow-inner bg-gray-100">
+    <GoalIcon name={icon} color={iconColor} size="large" />
+  </div>
+</div>
 <div className="mb-4 relative" ref={containerRef}>
         <label className="block font-semibold mb-2 text-gray-700">Icon</label>
         <button
@@ -126,15 +133,23 @@ const AddGoalForm = () => {
     <label htmlFor="icon-color" className="block font-semibold mb-1 text-gray-700">
       Icon Color
     </label>
-    <input
-      id="icon-color"
-      type="text"
-      placeholder="e.g., red, blue"
-      value={iconColor}
-      onChange={(e) => setIconColor(e.target.value)}
-      className="border border-gray-300 p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+    <div className="flex flex-wrap gap-3">
+  {Object.entries(ICON_COLORS).map(([name, hex]) => (
+    <button
+      key={name}
+      type="button"
+      onClick={() => setIconColor(hex)}
+      title={name}
+      aria-label={name}
+      className={`w-8 h-8 rounded-full border-2 ${
+        iconColor === hex ? 'border-black scale-110' : 'border-transparent'
+      }`}
+      style={{ backgroundColor: hex }}
     />
+  ))}
+</div>
   </div>
+  
 
   <div className="mb-4">
     <label htmlFor="target-date" className="block font-semibold mb-1 text-gray-700">
