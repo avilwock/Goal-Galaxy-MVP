@@ -17,21 +17,32 @@ const TaskWidget = () => {
   const goal = data?.goal ?? {};
 
 return (
-<div className ='flex flex-wrap gap-1 border rounded-xl p-8 m-4'>
-      {goal.tasks?.map(task => (
-        <div key={task._id}>
-          {task.title}
-          {task.description}
-          {formatDate(task.due_date)}
-          {task.due_time}
-          {task.priority}
-          {task.recurrence}
-          {task.recurrence_days}
-          {task.recurrence_end_date}
-          {task.completed}
-        </div>    
-      ))}
+<div className="flex flex-col border rounded-xl p-4">
+  {/* Header row */}
+  <div className="flex font-semibold border-b pb-2 mb-2">
+    <div className="w-1/4">Task</div>
+    <div className="w-1/4">Description</div>
+    <div className="w-1/6">Due Date</div>
+    <div className="w-1/6">Priority</div>
+    <div className="w-1/6">Status</div>
+  </div>
+
+  {/* Task rows */}
+  {goal.tasks?.map(task => (
+    <div
+      key={task._id}
+      className="flex gap-2 items-center border-b last:border-b-0 p-2"
+    >
+      <div className="w-1/4">{task.title}</div>
+      <div className="w-1/4">{task.description}</div>
+      <div className="w-1/6">
+        {task.due_date ? formatDate(task.due_date) : ""}
       </div>
+      <div className="w-1/6">{task.priority}</div>
+      <div className="w-1/6">{task.completed ? "Done" : "Active"}</div>
+    </div>
+  ))}
+</div>
 )}
 
 export default TaskWidget;

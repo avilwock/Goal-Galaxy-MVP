@@ -18,7 +18,7 @@ const MilestoneWidget = () => {
   const goal = data?.goal ?? {};
 
 return (
-    <div className = 'flex flex-wrap gap-1 border rounded-xl w-xl p-8 m-4'>
+    <div className = 'flex flex-wrap gap-1 border rounded-xl p-8'>
         {goal.milestones?.map(milestone => (
           <div key={milestone._id}>
             {milestone.title}
