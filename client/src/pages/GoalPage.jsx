@@ -3,6 +3,8 @@ import { useQuery } from "@apollo/client/react";
 import { QUERY_GOAL } from "../utils/queries";
 import GoalIcon from '../components/GoalIcon'
 import { formatDate } from '../utils/date';
+import StatusIcon from '../components/StatusIcon';
+import ProgressBar from '../components/ProgressBar';
 
 const GoalPage = () => {
   const { id } = useParams();
@@ -19,19 +21,28 @@ const GoalPage = () => {
   const goal = data.goal;
 
   return (
-    <div>
-      <div>
+    <div className = "place-self-center">
+      <div  className = "place-self-center">
+      <div className = "flex items-start gap-4 place-self-start absolute top-0 left-120">
         <GoalIcon
             name = {goal.icon}
-            size="large"
+            size="xlarge"
             color={goal.icon_color}
             >
         </GoalIcon>
-        <h2>{goal.goal_name}</h2>
-        <p>{goal.description}</p>
-        <p>Target Date: {formatDate(goal.target_date)}</p>
-        <p>Status: {goal.status}</p>
-        <p>{goal.progress}</p>
+        <div className = "ml-auto m-4">
+        <StatusIcon status={goal.status} />
+        </div>
+      </div>
+        <h2 className = "text-9xl flex gap-4 place-self-center mb-4">{goal.goal_name}</h2>
+        <div className = "flex flex-col gap-1 border rounded-xl w-3xl p-8">
+          <p>Description: {goal.description}</p>
+          <p>Target Date: {formatDate(goal.target_date)}</p>
+          <div className="flex flex-col mt-2">
+          <ProgressBar milestones={goal.milestones} />
+          <div className="text-xs text-gray-400 mt-1"></div>
+          </div>
+        </div>
       </div>
       <div style= {{border: '2px solid black'}}>
       {goal.tasks?.map(task => (
@@ -54,6 +65,7 @@ const GoalPage = () => {
             {milestone.title}
             {milestone.description}
             {milestone.target_date}
+            <p>Target Date: {formatDate(milestone.target_date)}</p>
             {formatDate(milestone.completed)}
             {milestone.order}
           </div>

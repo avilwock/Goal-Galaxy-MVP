@@ -14,7 +14,8 @@ const iconMap = {
 const sizeMap= {
     small: 14,
     medium: 25,
-    large: 32
+    large: 32,
+    xlarge: 120
 };
 
 const GoalIcon = ({ name, size = 'medium', color = 'black' }) => {
