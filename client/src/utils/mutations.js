@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { TASK_FIELDS, MILESTONE_FIELDS, GOAL_FIELDS } from './queries.js';
+import { TASK_FIELDS, MILESTONE_CREATE_FIELDS, GOAL_FIELDS } from './queries.js';
 
 export const ADD_GOAL = gql`
   mutation addGoal($goalInput: GoalInput!) {
@@ -58,18 +58,18 @@ export const DELETE_TASK = gql`
     `
 
 export const ADD_MILESTONE = gql`
-${MILESTONE_FIELDS}
-    mutation addMilestone($input: MilestoneInput!) {
-        addMilestone (input: $input) {
-            ...MilestoneFields
+${MILESTONE_CREATE_FIELDS}
+    mutation addMilestone($MilestoneInput: MilestoneInput!) {
+        addMilestone (MilestoneInput: $MilestoneInput) {
+            ...MilestoneCreateFields
         }
     }`
 
 export const EDIT_MILESTONE = gql`
-${MILESTONE_FIELDS}
+${MILESTONE_CREATE_FIELDS}
     mutation editMilestone($id: ID!, $input: MilestoneInput) {
         updatedMilestone(id: $id, input: $input){
-            ...MilestoneFields
+            ...MilestoneCreateFields
         }
     }`
 

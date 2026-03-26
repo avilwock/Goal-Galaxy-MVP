@@ -28,6 +28,17 @@ export const MILESTONE_FIELDS = gql`
         }
     }`
 
+export const MILESTONE_CREATE_FIELDS = gql`
+  fragment MilestoneCreateFields on Milestone {
+    _id
+    title
+    description
+    target_date
+    completed
+    order
+  }
+`;
+
 export const GOAL_FIELDS = gql`
     fragment GoalFields on Goal {
     _id

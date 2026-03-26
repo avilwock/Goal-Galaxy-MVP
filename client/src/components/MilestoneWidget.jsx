@@ -1,12 +1,15 @@
 import { useParams } from "react-router-dom";
+import { useState } from 'react';
 import { QUERY_GOAL } from '../utils/queries';
 import { formatDate } from '../utils/date';
 import { useQuery } from "@apollo/client/react";
-
+import AddMilestoneForm from './AddMilestone'
+import { Link } from 'react-router-dom'
 
 const MilestoneWidget = () => {
 
   const { id } = useParams();
+  const [showForm, setShowForm] = useState(false);
 
   const { loading, error, data } = useQuery(QUERY_GOAL,  {
     variables: { id }
@@ -19,6 +22,15 @@ const MilestoneWidget = () => {
 
 return (
     <div className = 'flex flex-wrap gap-1 border rounded-xl p-8'>
+       <button
+        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        onClick={() => setShowForm(true)}
+      >
+        Add Milestone
+      </button>
+
+      {/* Render Form Conditionally */}
+      {showForm && <AddMilestoneForm setShowForm={setShowForm} goalId={goal._id} />}
         {goal.milestones?.map(milestone => (
           <div key={milestone._id}>
             {milestone.title}
