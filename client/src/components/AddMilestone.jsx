@@ -7,7 +7,7 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const[target_date, setTargetDate] = useState('')
-    const [completed, setCompleted] = useState('')
+    const [completed, setCompleted] = useState(false)
     const [order, setOrder] = useState('')
 
     const [ addMilestone ] = useMutation(ADD_MILESTONE, {
@@ -42,10 +42,12 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
                         title,
                         description,
                         target_date: target_date || null,
-                        completed,
+                        completed: !!completed,
                         order: order ? parseInt(order): null
                     }
                 },
+                refetchQueries: [{query: QUERY_GOALS }],
+                awaitRefetchQueries: true
             })
             setTitle('');
             setDescription('');
@@ -124,7 +126,9 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
                 onChange = {(e) => setOrder(e.target.value)}
             />
         </div>
-        <button type = "submit">Add Milestone</button>
+        <div className = "border rounded-lg bg-blue-500 hover:bg-blue-600">
+            <button type = "submit">Add Milestone</button>
+        </div>
         </form>
     )
 }

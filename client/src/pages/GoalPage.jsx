@@ -7,14 +7,17 @@ import StatusIcon from '../components/StatusIcon';
 import ProgressBar from '../components/ProgressBar';
 import TaskWidget from "../components/TasksWidget";
 import MilestoneWidget from "../components/MilestoneWidget";
+import AddMilestoneForm from '../components/AddMilestone'
 import { useState } from 'react';
 import { Link } from 'react-router-dom'
 import { DELETE_GOAL } from "../utils/mutations";
+
 
 const GoalPage = () => {
   const { id } = useParams();
   const { loading, error, data } = useQuery(QUERY_GOAL, { variables: { id } });
   const [activeTab, setActiveTab] = useState("tasks");
+  const [showMilestoneForm, setShowMilestoneForm] = useState (false)
 
   const navigate=useNavigate();
 
@@ -65,19 +68,19 @@ const GoalPage = () => {
         {/* Description and progress */}
         <div className="flex flex-col items-center border rounded-xl w-6xl p-8">
 
-  <h3 className="text-xl font-semibold mb-2">
-    My Goal Objectives
-  </h3>
+            <h3 className="text-xl font-semibold mb-2">
+              My Goal Objectives
+            </h3>
 
-  <p className="text-center max-w-2xl">
-    {goal.description}
-  </p>
+            <p className="text-center max-w-2xl">
+              {goal.description}
+            </p>
 
-  <div className="flex flex-col mt-4 w-full">
-    <ProgressBar milestones={goal.milestones} />
-  </div>
+            <div className="flex flex-col mt-4 w-full">
+              <ProgressBar milestones={goal.milestones} />
+            </div>
 
-</div>
+        </div>
       </div>
       <p>Target Date: {formatDate(goal.target_date)}</p>
       {/* Tab buttons */}
@@ -97,15 +100,34 @@ const GoalPage = () => {
         </button>
 
         
+        
       </div>
 
       {/* Active widget */}
       <div className="mt-4 min-h-[300px]">
         {activeTab === "tasks" && <TaskWidget />}
-        {activeTab === "milestones" && <MilestoneWidget />}
+        {activeTab === "milestones" && (
+          <div>
+            {!showMilestoneForm && (
+              <button
+                onClick={() => setShowMilestoneForm(true)}
+                className="mb-4 px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+                >
+                 Add Milestone
+              </button>
+            )}
+            {showMilestoneForm && (
+              <AddMilestoneForm
+                goalId={goal._id}
+                setShowForm={setShowMilestoneForm}
+                />
+            )}
+            <MilestoneWidget />
+        </div>
+        )}
       </div>
     </div>
-  );
+  )
 };
 
 export default GoalPage;
