@@ -126,9 +126,12 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
                 onChange = {(e) => setOrder(e.target.value)}
             />
         </div>
-        <div className = "border rounded-lg bg-blue-500 hover:bg-blue-600">
-            <button type = "submit">Add Milestone</button>
-        </div>
+        <button
+            type="submit"
+            className="border rounded-lg bg-blue-500 hover:bg-blue-600 px-4 py-2 text-white"
+            >
+            Add Milestone
+        </button>
         </form>
     )
 }
