@@ -6,21 +6,23 @@ const EditMilestone = ({ milestoneId, milestoneData, onCancel }) => {
   // Initialize state from the passed milestone data
   const [title, setTitle] = useState(milestoneData.title || '');
   const [description, setDescription] = useState(milestoneData.description || '');
-  const [target_date, setTargetDate] = useState(milestoneData.target_date || '');
+  const [target_date, setTargetDate] = useState(
+    milestoneData.target_date ? milestoneData.target_date.slice(0,10): '' 
+  );
   const [completed, setCompleted] = useState(milestoneData.completed || false);
   const [order, setOrder] = useState(milestoneData.order || '');
 
-  const [updateMilestone] = useMutation(EDIT_MILESTONE, {
+  const [editMilestone] = useMutation(EDIT_MILESTONE, {
     onCompleted: () => onCancel(), // Close form after successful update
     onError: (err) => console.error('Failed to update milestone:', err),
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateMilestone({
+    editMilestone({
       variables: {
         id: milestoneId,
-        MilestoneInput: { title, description, target_date, completed, order },
+        MilestoneInput: { goal_id: milestoneData.goal_id, title, description, target_date, completed, order },
       },
     });
   };

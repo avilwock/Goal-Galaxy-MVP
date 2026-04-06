@@ -18,6 +18,7 @@ export const TASK_FIELDS = gql`
 export const MILESTONE_FIELDS = gql`
     fragment MilestoneFields on Milestone {
         _id
+        goal_id
         title
         description
         target_date
@@ -31,6 +32,7 @@ export const MILESTONE_FIELDS = gql`
 export const MILESTONE_CREATE_FIELDS = gql`
   fragment MilestoneCreateFields on Milestone {
     _id
+    goal_id
     title
     description
     target_date

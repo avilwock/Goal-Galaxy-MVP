@@ -67,8 +67,8 @@ ${MILESTONE_CREATE_FIELDS}
 
 export const EDIT_MILESTONE = gql`
 ${MILESTONE_CREATE_FIELDS}
-    mutation editMilestone($id: ID!, $MilestoneInput: MilestoneInput) {
-        updatedMilestone(id: $id, MilestoneInput: $MilestoneInput){
+    mutation editMilestone($id: ID!, $MilestoneInput: MilestoneInput!) {
+        editMilestone(id: $id, MilestoneInput: $MilestoneInput){
             ...MilestoneCreateFields
         }
     }`
