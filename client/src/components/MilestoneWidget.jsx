@@ -6,6 +6,7 @@ import { useQuery, useMutation } from "@apollo/client/react";
 import AddMilestoneForm from './AddMilestone';
 import EditMilestone from './EditMilestone';
 import { DELETE_MILESTONE } from '../utils/mutations';
+import { EDIT_MILESTONE } from '../utils/mutations';
 
 const MilestoneWidget = () => {
   const { id } = useParams(); // goal ID
@@ -22,6 +23,24 @@ const MilestoneWidget = () => {
     },
     onError: (err) => console.error('Failed to delete milestone:', err),
   });
+
+  const [editMilestone] = useMutation(EDIT_MILESTONE, {
+  onCompleted: () => refetch(),
+  onError: (err) => console.error('Failed to update milestone:', err),
+});
+
+const handleCompleteToggle = (milestone) => {
+  editMilestone({
+    variables: {
+      id: milestone._id,
+      MilestoneInput: {
+        goal_id: milestone.goal_id,
+        title: milestone.title,
+        completed: !milestone.completed
+      }
+    }
+  });
+};
 
   if (loading) return <p>Loading goal...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -59,6 +78,16 @@ const MilestoneWidget = () => {
               >
                 Edit
               </button>
+
+              <button
+                onClick={() => handleCompleteToggle(milestone)}
+                className={`px-3 py-2 rounded text-white ${
+                  milestone.completed ? 'bg-gray-400' : 'bg-green-500'
+                }`}
+              >
+                {milestone.completed ? 'Completed' : 'Complete'}
+              </button>
+
               <button
                 onClick={() => handleDelete(milestone._id)}
                 className="px-3 py-2 rounded bg-red-500 text-white"

@@ -75,7 +75,16 @@ const EditMilestone = ({ milestoneId, milestoneData, onCancel }) => {
       >
         Cancel
       </button>
+       <button
+        onClick={() => setCompleted (!completed)}
+        className={`px-3 py-2 rounded text-white ${
+          completed ? 'bg-gray-400' : 'bg-green-500'
+        }`}>
+      {completed ? 'Completed' : 'Complete'}
+    </button>
     </form>
+
+   
   );
 };
 
