@@ -15,7 +15,7 @@ const AddGoalForm = ({setShowForm}) => {
   const [open, setOpen] = useState(false);
   const containerRef=useRef();
 
-  const [addGoal ] = useMutation(ADD_GOAL, {
+  const [ addGoal ] = useMutation(ADD_GOAL, {
     update(cache, { data: { addGoal } }) {
       const { goals } = cache.readQuery({ query: QUERY_GOALS }) || { goals: [] };
       cache.writeQuery({
