@@ -23,13 +23,8 @@ const SortableItem = ({
   handleCompleteToggle,
   handleDelete,
 }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: milestone._id });
+  const { setNodeRef, transform, transition, attributes, listeners } =
+    useSortable({ id: milestone._id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -38,13 +33,19 @@ const SortableItem = ({
   };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
+    <div ref={setNodeRef} style={style} className="border p-2 rounded w-full mb-2">
+      {/* DRAG HANDLE */}
+      <div
       {...attributes}
       {...listeners}
-      className="border p-2 rounded w-full mb-2 bg-gray"
+      className="bg-gray-900 p-2 rounded mb-2 cursor-grab flex justify-between items-center"
     >
+      <h3 className="font-semibold">{milestone.title}</h3>
+      <p className="text-sm text-white-100">
+        {milestone.target_date ? formatDate(new Date(milestone.target_date)) : "No date"}
+      </p>
+    </div>
+
       {editingId === milestone._id ? (
         <EditMilestone
           milestoneId={milestone._id}
@@ -53,16 +54,7 @@ const SortableItem = ({
         />
       ) : (
         <>
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="font-semibold">{milestone.title}</h3>
-            <p className="text-sm text-gray-600">
-              Due: {formatDate(milestone.target_date)}
-            </p>
-          </div>
-
-          {milestone.description && (
-            <p className="mb-2">{milestone.description}</p>
-          )}
+          {milestone.description && <p className="mb-2">{milestone.description}</p>}
 
           <div className="flex items-center gap-2 mt-2">
             <button
@@ -101,9 +93,7 @@ const MilestoneWidget = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  const { loading, error, data, refetch } = useQuery(QUERY_GOAL, {
-    variables: { id },
-  });
+  const { loading, error, data, refetch } = useQuery(QUERY_GOAL, { variables: { id } });
 
   const [deleteMilestone] = useMutation(DELETE_MILESTONE, {
     onCompleted: () => {
@@ -112,13 +102,9 @@ const MilestoneWidget = () => {
     },
   });
 
-  const [editMilestone] = useMutation(EDIT_MILESTONE, {
-    onCompleted: () => refetch(),
-  });
+  const [editMilestone] = useMutation(EDIT_MILESTONE, { onCompleted: () => refetch() });
 
-  // always derive sorted milestones directly from query data
-const milestones =
-  data?.goal?.milestones
+  const milestones = data?.goal?.milestones
     ? [...data.goal.milestones].sort((a, b) => a.order - b.order)
     : [];
 
@@ -140,29 +126,21 @@ const milestones =
 
   const handleDelete = (milestoneId) => {
     if (!window.confirm("Delete this milestone?")) return;
-
-    deleteMilestone({
-      variables: { id: milestoneId },
-    });
+    deleteMilestone({ variables: { id: milestoneId } });
   };
 
   const handleDragEnd = (event) => {
     const { active, over } = event;
-
     if (!over || active.id === over.id) return;
 
-    const oldIndex = milestones.findIndex(
-      (m) => m._id === active.id
-    );
-
-    const newIndex = milestones.findIndex(
-      (m) => m._id === over.id
-    );
+    const oldIndex = milestones.findIndex((m) => m._id === active.id);
+    const newIndex = milestones.findIndex((m) => m._id === over.id);
 
     const reordered = arrayMove(milestones, oldIndex, newIndex);
 
     reordered.forEach((milestone, index) => {
-      if (milestone.order !== index + 1) {
+      const newOrder = index + 1;
+      if (milestone.order !== newOrder) {
         editMilestone({
           variables: {
             id: milestone._id,
@@ -171,8 +149,8 @@ const milestones =
               title: milestone.title,
               description: milestone.description,
               target_date: milestone.target_date,
-              order: index + 1,
               completed: milestone.completed,
+              order: newOrder,
             },
           },
         });
@@ -192,17 +170,9 @@ const milestones =
         Add Milestone
       </button>
 
-      {showForm && (
-        <AddMilestoneForm
-          setShowForm={setShowForm}
-          goalId={data.goal._id}
-        />
-      )}
+      {showForm && <AddMilestoneForm setShowForm={setShowForm} goalId={data.goal._id} />}
 
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext
           items={milestones.map((m) => m._id)}
           strategy={verticalListSortingStrategy}
