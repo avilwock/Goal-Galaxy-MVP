@@ -37,9 +37,11 @@ const EditGoal = () => {
         updateGoal({
             variables: {
                 id,
+                goalInput: {
                 goal_name,
                 description,
                 target_date
+                }
             }
         })
     }

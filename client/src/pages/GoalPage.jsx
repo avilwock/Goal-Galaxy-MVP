@@ -25,9 +25,11 @@ const EditGoalForm = ({ goal, onClose }) => {
     await updateGoal({
       variables: {
         id: goal._id,
+        goalInput: {
         goal_name,
         description,
         target_date,
+        }
       },
     });
     onClose();
@@ -96,7 +98,7 @@ const GoalPage = () => {
       {/* Goal header */}
       <div className="flex items-start justify-between mt-5">
         <GoalIcon name={goal.icon} size="xlarge" color={goal.icon_color} />
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 justify-center items-center">
           <StatusIcon status={goal.status} />
           <button
             onClick={() => setShowEditGoal(prev => !prev)}
