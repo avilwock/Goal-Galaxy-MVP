@@ -18,8 +18,8 @@ const AddTaskForm = ({
     const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
     const [completed, setCompleted] = useState(false);
 
-    const [goalId, setGoalId] = useState(goalContextId || '');
-    const [milestoneId, setMilestoneId] = useState(milestoneContextId || '');
+    const [goal_id, setGoalId] = useState(goalContextId || '');
+    const [milestone_id, setMilestoneId] = useState(milestoneContextId || '');
 
     const { data: goalData } = useQuery(QUERY_GOALS);
     const goals = goalData?.goals || [];
@@ -44,8 +44,8 @@ const AddTaskForm = ({
         }
     });
 
-    const selectedMilestone = milestones.find(m => m._id === milestoneId);
-    const derivedGoalId = selectedMilestone?.goalId || goalId;
+    const selectedMilestone = milestones.find(m => m._id === milestone_id);
+    const derivedGoalId = selectedMilestone?.goalId || goal_id;
 
     const isMilestoneLocked = !!milestoneContextId;
     const isGoalLocked = !!milestoneContextId;
@@ -75,18 +75,18 @@ const AddTaskForm = ({
         try {
             await addTask({
                 variables: {
-                    taskInput: {
+                    TaskInput: {
                         title,
                         description,
-                        due_date: dueDate,
-                        due_time: dueTime,
-                        priority,
-                        recurrence,
-                        recurrence_days: recurrenceDays,
-                        recurrence_end_date: recurrenceEndDate,
+                        due_date: dueDate || null,
+                        due_time: dueTime || null,
+                        priority: priority || null,
+                        recurrence: recurrence || null,
+                        recurrence_days: recurrenceDays ? parseInt(recurrenceDays): null,
+                        recurrence_end_date: recurrenceEndDate || null,
                         completed,
-                        goalId: derivedGoalId || null,
-                        milestoneId: milestoneId || milestoneContextId || null
+                        goal_id: derivedGoalId || null,
+                        milestone_id: milestone_id || milestoneContextId || null
                     }
                 }
             });
@@ -152,7 +152,7 @@ const AddTaskForm = ({
             />
 
             <select
-                value={goalId}
+                value={goal_id}
                 onChange={handleGoalChange}
                 disabled={isGoalLocked}
                 className="w-full mb-2 p-2 border rounded"
@@ -166,14 +166,14 @@ const AddTaskForm = ({
             </select>
 
             <select
-                value={milestoneId}
+                value={milestone_id}
                 onChange={handleMilestoneChange}
-                disabled={isMilestoneLocked || !goalId}
+                disabled={isMilestoneLocked || !goal_id}
                 className="w-full mb-2 p-2 border rounded"
             >
                 <option value="">No Milestone</option>
                 {milestones
-                    .filter(m => m.goalId === goalId)
+                    .filter(m => m.goalId === goal_id)
                     .map(m => (
                         <option key={m._id} value={m._id}>
                             {m.title}

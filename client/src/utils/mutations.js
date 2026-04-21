@@ -39,8 +39,8 @@ export const DELETE_GOAL = gql`
 
 export const ADD_TASK = gql`
 ${TASK_FIELDS} 
-    mutation addTask($input: TaskInput!) {
-        addTask( input: $input) {
+    mutation addTask($TaskInput: TaskInput!) {
+        addTask(TaskInput: $TaskInput) {
             ...TaskFields
         }
     }`

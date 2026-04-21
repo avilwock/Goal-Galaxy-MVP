@@ -24,7 +24,8 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
                     return goal;
                 });
                 cache.writeQuery({
-                data: {goals:newGoals}
+                    query: QUERY_GOALS,
+                    data: {goals:newGoals}
                 })
             }
         },

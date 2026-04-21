@@ -163,12 +163,12 @@ const MilestoneWidget = () => {
 
   return (
     <div className="border rounded-xl p-6 space-y-2">
-      <button
+      {/* <button
         onClick={() => setShowForm(!showForm)}
         className="px-4 py-2 bg-purple-500 text-white rounded"
       >
         Add Milestone
-      </button>
+      </button> */}
 
       {showForm && <AddMilestoneForm setShowForm={setShowForm} goalId={data.goal._id} />}
 
