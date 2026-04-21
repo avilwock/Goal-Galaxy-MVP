@@ -8,7 +8,7 @@ import { DELETE_GOAL, EDIT_GOAL } from "../utils/mutations";
 import GoalIcon from "../components/GoalIcon";
 import StatusIcon from "../components/StatusIcon";
 import ProgressBar from "../components/ProgressBar";
-import TaskWidget from "../components/TasksWidget";
+import GoalTaskWidget from "../components/GoalTaskWidget";
 import MilestoneWidget from "../components/MilestoneWidget";
 import AddMilestoneForm from "../components/AddMilestone";
 import AddTaskForm from "../components/AddTask";
@@ -216,7 +216,7 @@ const GoalPage = () => {
               />
             )}
 
-            <TaskWidget />
+            <GoalTaskWidget />
 
           </div>
         )}

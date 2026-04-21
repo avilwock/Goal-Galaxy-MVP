@@ -1,13 +1,9 @@
 import { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
 import { ADD_TASK } from '../utils/mutations';
-import { QUERY_GOALS, QUERY_MILESTONES, QUERY_TASKS } from '../utils/queries';
 
-const AddTaskForm = ({
-    setShowForm,
-    goalContextId = null,
-    milestoneContextId = null
-}) => {
+const AddTaskForm = ({ setShowForm, goalContextId = null, milestoneContextId = null }) => {
+
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [dueDate, setDueDate] = useState('');
@@ -18,107 +14,58 @@ const AddTaskForm = ({
     const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
     const [completed, setCompleted] = useState(false);
 
-    const [goal_id, setGoalId] = useState(goalContextId || '');
-    const [milestone_id, setMilestoneId] = useState(milestoneContextId || '');
+    const [addTask] = useMutation(ADD_TASK);
 
-    const { data: goalData } = useQuery(QUERY_GOALS);
-    const goals = goalData?.goals || [];
-
-    const { data: milestoneData } = useQuery(QUERY_MILESTONES);
-    const milestones = milestoneData?.milestones || [];
-
-    const [addTask] = useMutation(ADD_TASK, {
-        update(cache, { data: { addTask } }) {
-            try {
-                const existing = cache.readQuery({ query: QUERY_TASKS }) || { tasks: [] };
-
-                cache.writeQuery({
-                    query: QUERY_TASKS,
-                    data: {
-                        tasks: [addTask, ...existing.tasks]
-                    }
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        }
-    });
-
-    const selectedMilestone = milestones.find(m => m._id === milestone_id);
-    const derivedGoalId = selectedMilestone?.goalId || goal_id;
-
-    const isMilestoneLocked = !!milestoneContextId;
-    const isGoalLocked = !!milestoneContextId;
-
-    const handleGoalChange = (e) => {
-        if (isGoalLocked) return;
-        setGoalId(e.target.value);
-        setMilestoneId('');
-    };
-
-    const handleMilestoneChange = (e) => {
-        if (isMilestoneLocked) return;
-
-        const value = e.target.value;
-        setMilestoneId(value);
-
-        const ms = milestones.find(m => m._id === value);
-        if (ms?.goalId) {
-            setGoalId(ms.goalId);
-        }
-    };
+    // SINGLE SOURCE OF TRUTH
+    const goal_id = goalContextId || milestoneContextId || null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!title) return;
 
-        try {
-            await addTask({
-                variables: {
-                    TaskInput: {
-                        title,
-                        description,
-                        due_date: dueDate || null,
-                        due_time: dueTime || null,
-                        priority: priority || null,
-                        recurrence: recurrence || null,
-                        recurrence_days: recurrenceDays ? parseInt(recurrenceDays): null,
-                        recurrence_end_date: recurrenceEndDate || null,
-                        completed,
-                        goal_id: derivedGoalId || null,
-                        milestone_id: milestone_id || milestoneContextId || null
-                    }
-                }
-            });
-
-            setTitle('');
-            setDescription('');
-            setDueDate('');
-            setDueTime('');
-            setPriority('');
-            setRecurrence('');
-            setRecurrenceDays('');
-            setRecurrenceEndDate('');
-            setCompleted(false);
-
-            setGoalId(goalContextId || '');
-            setMilestoneId(milestoneContextId || '');
-
-            setShowForm(false);
-        } catch (err) {
-            console.error(err);
+        if (!title || !goal_id) {
+            console.error("Missing title or goal context");
+            return;
         }
+
+        await addTask({
+            variables: {
+                TaskInput: {
+                    title,
+                    description,
+                    due_date: dueDate || null,
+                    due_time: dueTime || null,
+                    priority: priority || null,
+                    recurrence: recurrence || null,
+                    recurrence_days: recurrenceDays ? parseInt(recurrenceDays) : null,
+                    recurrence_end_date: recurrenceEndDate || null,
+                    completed,
+                    goal_id: goalContextId || null,
+                    milestone_id: milestoneContextId || null
+                }
+            },
+            refetchQueries: ["goal"]
+        });
+
+        setTitle('');
+        setDescription('');
+        setDueDate('');
+        setDueTime('');
+        setPriority('');
+        setRecurrence('');
+        setRecurrenceDays('');
+        setRecurrenceEndDate('');
+        setCompleted(false);
+
+        setShowForm(false);
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="bg-gray-800 p-6 rounded shadow-md max-w-md mx-auto my-4 relative"
-        >
+        <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded shadow-md max-w-md mx-auto my-4 relative">
+
             <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="absolute top-2 right-2 text-gray-600 text-xl"
+                className="absolute top-2 right-2 text-gray-400"
             >
                 X
             </button>
@@ -152,34 +99,50 @@ const AddTaskForm = ({
             />
 
             <select
-                value={goal_id}
-                onChange={handleGoalChange}
-                disabled={isGoalLocked}
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
                 className="w-full mb-2 p-2 border rounded"
             >
-                <option value="">No Goal</option>
-                {goals.map(goal => (
-                    <option key={goal._id} value={goal._id}>
-                        {goal.title}
-                    </option>
-                ))}
+                <option value="">Priority</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
             </select>
 
             <select
-                value={milestone_id}
-                onChange={handleMilestoneChange}
-                disabled={isMilestoneLocked || !goal_id}
+                value={recurrence}
+                onChange={(e) => setRecurrence(e.target.value)}
                 className="w-full mb-2 p-2 border rounded"
             >
-                <option value="">No Milestone</option>
-                {milestones
-                    .filter(m => m.goalId === goal_id)
-                    .map(m => (
-                        <option key={m._id} value={m._id}>
-                            {m.title}
-                        </option>
-                    ))}
+                <option value="">No Recurrence</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
             </select>
+
+            <input
+                type="number"
+                value={recurrenceDays}
+                onChange={(e) => setRecurrenceDays(e.target.value)}
+                placeholder="Recurrence Days"
+                className="w-full mb-2 p-2 border rounded"
+            />
+
+            <input
+                type="date"
+                value={recurrenceEndDate}
+                onChange={(e) => setRecurrenceEndDate(e.target.value)}
+                className="w-full mb-2 p-2 border rounded"
+            />
+
+            <label className="flex items-center gap-2 mb-2">
+                <input
+                    type="checkbox"
+                    checked={completed}
+                    onChange={(e) => setCompleted(e.target.checked)}
+                />
+                Completed
+            </label>
 
             <button
                 type="submit"
