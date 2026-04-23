@@ -6,10 +6,11 @@ import GoalIcon from '../components/GoalIcon';
 import StatusIcon from '../components/StatusIcon';
 import ProgressBar from '../components/ProgressBar';
 import AddGoal from './AddGoal'
+import AddTaskForm from './AddTask'
 
 const GoalsList = () => {
   const navigate = useNavigate();
-  const [showForm, setShowForm] = useState(false);
+  const [activeModal, setActiveModal] = useState(false);
   const { loading, error, data } = useQuery(QUERY_GOALS);
 
   if (loading) return <p>Loading goals...</p>;
@@ -23,12 +24,22 @@ const GoalsList = () => {
   {/* Add Goal button, offset from right */}
   <div className="flex justify-center mb-6"> {/* pr-16 pushes it in from the right ~10-15% */}
     <button
-      onClick={() => setShowForm(true)}
+      onClick={() => setActiveModal('goal')}
       className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
     >
       Add New Goal
     </button>
   </div>
+
+  <div className="flex justify-center mb-6"> {/* pr-16 pushes it in from the right ~10-15% */}
+    <button
+      onClick={() => setActiveModal('task')}
+      className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+    >
+      Add New Task
+    </button>
+  </div>
+
 
   {/* Goals grid */}
   <div className="flex flex-wrap justify-center gap-6">
@@ -56,23 +67,30 @@ const GoalsList = () => {
   </div>
 
   {/* Modal overlay */}
-  {showForm && (
-    <>
-      <div className="fixed inset-0 z-40 bg-black/30" />
-      <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="relative bg-gray-100 p-6 rounded shadow-md max-w-md w-full">
-          <button
-            type="button"
-            onClick={() => setShowForm(false)}
-            className="absolute top-2 right-2 text-gray-600 text-xl font-bold"
-          >
-            ✕
-          </button>
-          <AddGoal setShowForm={setShowForm} />
-        </div>
+  {activeModal && (
+  <>
+    <div className="fixed inset-0 z-40 bg-black/30" />
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="relative bg-gray-100 p-6 rounded shadow-md max-w-md w-full">
+        <button
+          type="button"
+          onClick={() => setActiveModal(null)}
+          className="absolute top-2 right-2 text-gray-600 text-xl font-bold"
+        >
+          ✕
+        </button>
+
+        {activeModal === 'goal' && (
+          <AddGoal setShowForm={() => setActiveModal(null)} />
+        )}
+
+        {activeModal === 'task' && (
+          <AddTaskForm setShowForm={() => setActiveModal(null)} />
+        )}
       </div>
-    </>
-  )}
+    </div>
+  </>
+)}
 </div>
   );
 };

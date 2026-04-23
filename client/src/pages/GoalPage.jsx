@@ -126,7 +126,7 @@ const GoalPage = () => {
 
           <button
             onClick={() => setShowEditGoal((p) => !p)}
-            className="px-3 py-2 rounded bg-gray-200 hover:bg-gray-300"
+            className="px-3 py-2 rounded bg-blue-500 hover:bg-gray-300"
           >
             {showEditGoal ? "Cancel Edit" : "Edit Goal"}
           </button>
