@@ -8,9 +8,11 @@ export const TASK_FIELDS = gql`
         due_date
         due_time
         priority
-        recurrence
-        recurrence_days
-        recurrence_end_date
+        recurrence_rule
+        recurrence_time
+        timezone
+        recurrence_start
+        recurrence_end
         completed
     }`
 

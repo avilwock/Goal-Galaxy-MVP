@@ -55,6 +55,7 @@ const TaskWidget = () => {
         <div className="flex-1">Due Date</div>
         <div className="flex-1">Priority</div>
         <div className="flex-1">Status</div>
+        <div className="flex-1">Due Time</div>
         <div className="w-12"></div>
       </div>
 
@@ -73,6 +74,7 @@ const TaskWidget = () => {
           <div className="flex-1">
             {task.completed ? "Done" : "Active"}
           </div>
+          <div className="flex-1">{task.due_time}</div>
 
           <div className="w-12 flex justify-end">
             <button

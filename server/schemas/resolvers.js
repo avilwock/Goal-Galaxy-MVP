@@ -173,18 +173,20 @@ const resolvers = {
   },
   addTask: async(_, { TaskInput }) => {
         try {
-            const { title, description, goal_id, milestone_id, due_date, due_time, priority, recurrence, recurrence_days, recurrence_end_date, completed } = TaskInput;
+            const { title, description, goal_id, milestone_id, due_date, due_time, priority, recurrence_start, recurrence_rule, recurrence_time, timezone, recurrence_end, completed } = TaskInput;
             const newTask = await Task.create({
                 title, 
                 description, 
                 goal_id, 
                 milestone_id, 
-                due_date, 
-                due_time, 
+                due_date,  
+                due_time,
                 priority, 
-                recurrence, 
-                recurrence_days, 
-                recurrence_end_date, 
+                recurrence_rule,
+                recurrence_start,
+                timezone, 
+                recurrence_start, 
+                recurrence_end, 
                 completed
             });
             return newTask;
@@ -195,7 +197,7 @@ const resolvers = {
     },
   editTask: async(_, {id, TaskInput}) => {
         try {
-            const { title, description, goal, milestone, due_date, due_time, priority, recurrence, recurrence_days, recurrence_end_date, completed} = TaskInput
+            const { title, description, goal, milestone, due_date, due_time, priority, recurrence_rule, recurrence_time, timezone, recurrence_start,recurrence_end, completed} = TaskInput
             const updatedTask = await Task.findByIdAndUpdate(
                 id,
                 {
@@ -206,9 +208,11 @@ const resolvers = {
                     due_date,
                     due_time,
                     priority,
-                    recurrence,
-                    recurrence_days,
-                    recurrence_end_date,
+                    recurrence_rule,
+                    recurrence_time,
+                    timezone,
+                    recurrence_start,
+                    recurrence_end,
                     completed
                 },
                 { new: true }

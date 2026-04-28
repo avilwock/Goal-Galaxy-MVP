@@ -58,9 +58,11 @@ const typeDefs = `
     due_date: Date
     due_time: String
     priority: String
-    recurrence: String
-    recurrence_days: [Int]
-    recurrence_end_date: Date
+    recurrence_rule: String
+    recurrence_time: String
+    timezone: String
+    recurrence_start: String
+    recurrence_end: String
     completed: Boolean
     createdAt: Date
     updatedAt: Date
@@ -100,9 +102,11 @@ const typeDefs = `
     due_date: Date
     due_time: String
     priority: String
-    recurrence: String
-    recurrence_days: [Int]
-    recurrence_end_date: Date
+    recurrence_rule: String
+    recurrence_time: String
+    timezone: String
+    recurrence_start: String
+    recurrence_end: String
     completed: Boolean
   }
 

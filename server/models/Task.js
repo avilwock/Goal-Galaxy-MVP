@@ -33,28 +33,31 @@ const taskSchema = new Schema({
             type: Date
         },
         due_time: {
-            type: String,
-            description: "Time in HH:MM format"
+            type: String
         },
         priority: {
             type: String,
             enum: ['low', 'medium', 'high'],
             default: "medium"
         },
-        recurrence: {
+        recurrence_rule: {
             type: String,
-            enum: [ 'none', 'daily', 'monthly', 'weekly'],
-            default: 'none',
-            description: "How often the task repeats"
+            default: null,
+            description: "RRULE string (e.g. FREQ=WEEKLY;BYDAY=MO,WE)",
         },
-        recurrence_days: {
-            type: [Number],
-            description:
-                "For weekly recurrence: days of week (0=Sun, 1=Mon, ..., 6=Sat)",
+        recurrence_time: {
+            type: String,
+            description: "HH:MM format (e.g. 18:30)",
         },
-        recurrence_end_date: {
+        timezone: {
+            type: String,
+            default: "America/Los Angeles"
+        },
+        recurrence_start: {
             type: Date,
-            description: "When the recurrence ends (optional)"
+        },
+        recurrence_end: {
+            type: Date,
         },
         completed: {
             type: Boolean,

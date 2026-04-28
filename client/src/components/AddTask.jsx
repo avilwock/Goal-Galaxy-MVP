@@ -1,29 +1,41 @@
-import { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useState } from "react";
+import { useMutation, useQuery } from "@apollo/client/react";
 
-import { ADD_TASK } from '../utils/mutations';
-import { QUERY_GOALS, QUERY_MILESTONES, QUERY_GOAL } from '../utils/queries';
+import { ADD_TASK } from "../utils/mutations";
+import { QUERY_GOALS, QUERY_MILESTONES } from "../utils/queries";
+import { buildRRule } from "../utils/recurrence";
 
 const AddTaskForm = ({
   setShowForm,
   goalContextId = null,
   milestoneContextId = null
 }) => {
+  /* ---------------- CORE FIELDS ---------------- */
 
-  /* ---------------- STATE ---------------- */
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [dueDate, setDueDate] = useState('');
-  const [dueTime, setDueTime] = useState('');
-  const [priority, setPriority] = useState('');
-  const [recurrence, setRecurrence] = useState('');
-  const [recurrenceDays, setRecurrenceDays] = useState('');
-  const [recurrenceEndDate, setRecurrenceEndDate] = useState('');
-  const [completed, setCompleted] = useState(false);
+  const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
 
-  const [goalId, setGoalId] = useState(goalContextId || '');
-  const [milestoneId, setMilestoneId] = useState(milestoneContextId || '');
+  const [priority, setPriority] = useState("");
+
+  /* ---------------- RECURRENCE ---------------- */
+
+  const [recurrenceRule, setRecurrenceRule] = useState(""); // daily/weekly/monthly
+  const [recurrenceDays, setRecurrenceDays] = useState([]);
+  const [recurrenceStart, setRecurrenceStart] = useState("");
+  const [recurrenceEnd, setRecurrenceEnd] = useState("");
+
+  /* THIS is the correct monthly control */
+  const [monthlyDate, setMonthlyDate] = useState("");
+
+  const [recurrenceTime, setRecurrenceTime] = useState("");
+
+  /* ---------------- RELATIONSHIPS ---------------- */
+
+  const [goalId, setGoalId] = useState(goalContextId || "");
+  const [milestoneId, setMilestoneId] = useState(milestoneContextId || "");
 
   const isGoalContext = !!goalContextId;
   const isMilestoneContext = !!milestoneContextId;
@@ -31,235 +43,197 @@ const AddTaskForm = ({
   /* ---------------- DATA ---------------- */
 
   const { data: goalsData } = useQuery(QUERY_GOALS);
-  const goals = goalsData?.goals || [];
-
   const { data: milestonesData } = useQuery(QUERY_MILESTONES);
+
+  const goals = goalsData?.goals || [];
   const milestones = milestonesData?.milestones || [];
 
   /* ---------------- MUTATION ---------------- */
 
   const [addTask] = useMutation(ADD_TASK, {
-  update(cache, { data: { addTask } }) {
+    update(cache, { data: { addTask } }) {
+      if (!goalContextId) return;
 
-    if (!goalContextId) return;
-
-    cache.modify({
-      id: cache.identify({
-        __typename: "Goal",
-        _id: goalContextId
-      }),
-
-      fields: {
-        tasks(existingTaskRefs = [], { toReference }) {
-
-          const taskRef = toReference(addTask, true);
-
-          return [taskRef, ...existingTaskRefs];
+      cache.modify({
+        id: cache.identify({
+          __typename: "Goal",
+          _id: goalContextId
+        }),
+        fields: {
+          tasks(existing = [], { toReference }) {
+            return [toReference(addTask, true), ...existing];
+          }
         }
-      }
-    });
-
+      });
     }
-    });
+  });
+
+  /* ---------------- WEEKDAY TOGGLE ---------------- */
+
+  const toggleDay = (day) => {
+    setRecurrenceDays((prev) =>
+      prev.includes(day)
+        ? prev.filter((d) => d !== day)
+        : [...prev, day]
+    );
+  };
+
+  const days = [
+    "monday","tuesday","wednesday","thursday",
+    "friday","saturday","sunday"
+  ];
+
+  /* ---------------- TIME DISPLAY ONLY ---------------- */
+
+  const format12Hour = (t) => {
+    if (!t) return "";
+    const [h, m] = t.split(":");
+    let hour = Number(h);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12;
+    return `${hour}:${m} ${ampm}`;
+  };
 
   /* ---------------- SUBMIT ---------------- */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!title) return;
 
-    try {
-      await addTask({
-        variables: {
-          TaskInput: {
-            title,
-            description,
-            due_date: dueDate || null,
-            due_time: dueTime || null,
-            priority: priority || null,
-            recurrence: recurrence || null,
-            recurrence_days: recurrenceDays
-              ? parseInt(recurrenceDays)
-              : null,
-            recurrence_end_date: recurrenceEndDate || null,
-            completed,
+    await addTask({
+      variables: {
+        TaskInput: {
+          title,
+          description,
 
-            goal_id: goalContextId || goalId || null,
-            milestone_id: milestoneContextId || milestoneId || null
-          }
+          due_date: dueDate || null,
+          due_time: dueTime || null,
+          priority: priority || null,
+
+          recurrence_rule: buildRRule({
+            recurrenceRule,
+            recurrenceDays,
+            recurrenceStart,
+            recurrenceEnd,
+            monthlyDate
+          }),
+
+          recurrence_start: recurrenceStart || null,
+          recurrence_end: recurrenceEnd || null,
+          recurrence_time: recurrenceTime || null,
+
+          goal_id: goalContextId || goalId || null,
+          milestone_id: milestoneContextId || milestoneId || null
         }
-      });
+      }
+    });
 
-      /* ---------------- RESET ---------------- */
+    /* RESET */
+    setTitle("");
+    setDescription("");
+    setDueDate("");
+    setDueTime("");
+    setPriority("");
 
-      setTitle('');
-      setDescription('');
-      setDueDate('');
-      setDueTime('');
-      setPriority('');
-      setRecurrence('');
-      setRecurrenceDays('');
-      setRecurrenceEndDate('');
-      setCompleted(false);
+    setRecurrenceRule("");
+    setRecurrenceDays([]);
+    setRecurrenceStart("");
+    setRecurrenceEnd("");
+    setRecurrenceTime("");
+    setMonthlyDate("");
 
-      setGoalId(goalContextId || '');
-      setMilestoneId(milestoneContextId || '');
+    setGoalId(goalContextId || "");
+    setMilestoneId(milestoneContextId || "");
 
-      setShowForm(false);
-
-    } catch (err) {
-      console.error(err);
-    }
+    setShowForm(false);
   };
 
   /* ---------------- UI ---------------- */
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-gray-800 p-6 rounded shadow-md max-w-md mx-auto my-4 relative"
-    >
+    <form onSubmit={handleSubmit} className="bg-gray-800 p-6 text-white rounded">
 
-      {/* CLOSE BUTTON */}
-      <button
-        type="button"
-        onClick={() => setShowForm(false)}
-        className="absolute top-2 right-3 text-white text-xl"
-      >
-        ×
-      </button>
+      <h2>Add Task</h2>
 
-      <h2 className="text-xl font-bold mb-4 text-center text-white">
-        Add Task
-      </h2>
+      {/* BASIC */}
+      <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" />
+      <textarea value={description} onChange={e => setDescription(e.target.value)} />
 
-      {/* TITLE */}
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Task title"
-        className="w-full mb-2 p-2 border rounded"
-      />
+      <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
 
-      {/* DESCRIPTION */}
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Description"
-        className="w-full mb-2 p-2 border rounded"
-      />
+      <div>
+        <input
+          type="time"
+          value={dueTime}
+          onChange={e => setDueTime(e.target.value)}
+        />
+        <span>{format12Hour(dueTime)}</span>
+      </div>
 
-      {/* DATE / TIME */}
-      <input
-        type="date"
-        value={dueDate}
-        onChange={(e) => setDueDate(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-      />
-
-      <input
-        type="time"
-        value={dueTime}
-        onChange={(e) => setDueTime(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-      />
-
-      {/* GOAL SELECT (GLOBAL ONLY) */}
-      {!isGoalContext && !isMilestoneContext && (
-        <select
-          value={goalId}
-          onChange={(e) => {
-            setGoalId(e.target.value);
-            setMilestoneId('');
-          }}
-          className="w-full mb-2 p-2 border rounded"
-        >
+      {/* GOALS */}
+      {!isGoalContext && (
+        <select value={goalId} onChange={e => setGoalId(e.target.value)}>
           <option value="">No Goal</option>
-          {goals.map(goal => (
-            <option key={goal._id} value={goal._id}>
-              {goal.goal_name}
-            </option>
+          {goals.map(g => (
+            <option key={g._id} value={g._id}>{g.goal_name}</option>
           ))}
         </select>
       )}
 
-      {/* MILESTONE SELECT */}
+      {/* MILESTONES */}
       {!isMilestoneContext && (
-        <select
-          value={milestoneId}
-          onChange={(e) => setMilestoneId(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        >
+        <select value={milestoneId} onChange={e => setMilestoneId(e.target.value)}>
           <option value="">No Milestone</option>
-
-          {milestones
-            .filter(m => (goalContextId || goalId) ? m.goal_id === (goalContextId || goalId) : true)
-            .map(m => (
-              <option key={m._id} value={m._id}>
-                {m.title}
-              </option>
-            ))}
+          {milestones.map(m => (
+            <option key={m._id} value={m._id}>{m.title}</option>
+          ))}
         </select>
       )}
 
       {/* PRIORITY */}
-      <select
-        value={priority}
-        onChange={(e) => setPriority(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-      >
+      <select value={priority} onChange={e => setPriority(e.target.value)}>
         <option value="">Priority</option>
         <option value="low">Low</option>
         <option value="medium">Medium</option>
         <option value="high">High</option>
       </select>
 
-      {/* RECURRENCE */}
-      <select
-        value={recurrence}
-        onChange={(e) => setRecurrence(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-      >
-        <option value="">No Recurrence</option>
+      {/* RECURRENCE TYPE */}
+      <select value={recurrenceRule} onChange={e => setRecurrenceRule(e.target.value)}>
+        <option value="">None</option>
         <option value="daily">Daily</option>
         <option value="weekly">Weekly</option>
         <option value="monthly">Monthly</option>
       </select>
 
-      <input
-        type="number"
-        value={recurrenceDays}
-        onChange={(e) => setRecurrenceDays(e.target.value)}
-        placeholder="Recurrence Days"
-        className="w-full mb-2 p-2 border rounded"
-      />
+      {/* WEEKLY DAYS */}
+      {recurrenceRule === "weekly" && (
+        <div>
+          {days.map(d => (
+            <button type="button" key={d} onClick={() => toggleDay(d)}>
+              {d}
+            </button>
+          ))}
+        </div>
+      )}
 
-      <input
-        type="date"
-        value={recurrenceEndDate}
-        onChange={(e) => setRecurrenceEndDate(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-      />
-
-      {/* COMPLETED */}
-      <label className="flex items-center gap-2 mb-3 text-white">
+      {/* MONTHLY FIX — REAL DATE PICKER */}
+      {recurrenceRule === "monthly" && (
         <input
-          type="checkbox"
-          checked={completed}
-          onChange={(e) => setCompleted(e.target.checked)}
+          type="date"
+          value={monthlyDate}
+          onChange={e => setMonthlyDate(e.target.value)}
         />
-        Completed
-      </label>
+      )}
 
-      {/* SUBMIT */}
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white p-2 rounded"
-      >
-        Add Task
-      </button>
+      {/* RECURRENCE RANGE */}
+      <input type="date" value={recurrenceStart} onChange={e => setRecurrenceStart(e.target.value)} />
+      <input type="date" value={recurrenceEnd} onChange={e => setRecurrenceEnd(e.target.value)} />
 
+      {/* TIME */}
+      <input type="time" value={recurrenceTime} onChange={e => setRecurrenceTime(e.target.value)} />
+
+      <button type="submit">Save Task</button>
     </form>
   );
 };
