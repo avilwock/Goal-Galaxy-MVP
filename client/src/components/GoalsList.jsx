@@ -7,6 +7,7 @@ import StatusIcon from '../components/StatusIcon';
 import ProgressBar from '../components/ProgressBar';
 import AddGoal from './AddGoal'
 import AddTaskForm from './AddTask'
+// import TaskWidget from './TasksWidget'
 
 const GoalsList = () => {
   const navigate = useNavigate();
@@ -65,6 +66,11 @@ const GoalsList = () => {
       </button>
     ))}
   </div>
+
+   {/* RIGHT SIDE — TASKS
+  <div className="w-[400px]">
+    <TaskWidget />
+  </div> */}
 
   {/* Modal overlay */}
   {activeModal && (

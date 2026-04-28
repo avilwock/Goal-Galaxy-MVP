@@ -47,8 +47,8 @@ ${TASK_FIELDS}
 
 export const EDIT_TASK = gql`
 ${TASK_FIELDS}
-    mutation editTask($id: ID!, $input: TaskInput) {
-        updatedTask(id: $id, input: $input) {
+    mutation editTask($id: ID!, $TaskInput: TaskInput!) {
+        editTask(id: $id, TaskInput: $TaskInput) {
             ...TaskFields
         }
     }`
