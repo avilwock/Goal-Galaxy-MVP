@@ -1,7 +1,13 @@
 const typeDefs = `
   scalar Date
 
+  type Auth {
+    token: ID!
+    user: User!
+  }
+
   type Query {
+    me: User
     goalCategories: [GoalCategory]
     goalCategory(id:ID!): GoalCategory
     goals: [Goal]
@@ -10,6 +16,14 @@ const typeDefs = `
     goal(id: ID!): Goal
     milestone(id: ID!): Milestone
     task(id: ID!): Task
+  }
+
+  type User {
+    _id: ID!
+    username: String!
+    name: String!
+    email: String!
+    photo: String
   }
 
   type Goal {
@@ -68,6 +82,13 @@ const typeDefs = `
     updatedAt: Date
   }
 
+  input UserInput {
+    username: String!
+    name: String!
+    email: String!
+    photo: String
+  }
+
   input GoalCategoryInput {
     category_name: String!
     icon: String!
@@ -110,7 +131,20 @@ const typeDefs = `
     completed: Boolean
   }
 
+  input EditUserInput {
+    username: String
+    name: String
+    email: String
+    password: String
+    photo: String
+  }
+
   type Mutation {
+
+    login(email: String!, password:String!): Auth
+    addUser(userInput: UserInput!): Auth
+    editUser(id: ID!, userInput: EditUserInput!): User
+
     addGoal(goalInput: GoalInput!): Goal
     editGoal(id: ID!, goalInput: GoalInput!): Goal
     deleteGoal(id: ID!): Boolean

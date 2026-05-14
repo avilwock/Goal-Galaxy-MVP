@@ -1,10 +1,32 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Goal, GoalCategory, Milestone, Task } from '../models/index.js';
+import { Goal, GoalCategory, Milestone, Task, User } from '../models/index.js';
 import { signToken, AuthenticationError } from '../utils/auth.js';
 
 const resolvers = {
   Query: {
+
+    me: async(_, args, context) => {
+      if (!context.user) {
+        throw new AuthenticationError(
+          'Could not authenticate user'
+        )
+      }
+
+      try {
+        const userData = await User.findOne({
+          _id: context.user._id
+        });
+
+        return userData;
+      } catch (error) {
+        console.error(
+          'Error fetching user data:',
+          error
+        );
+        throw new Error('Internal server error');
+      }
+    },
     goals: async () => {
       try {
         return await Goal.find(); //add back with .populate('category_id')
@@ -66,19 +88,69 @@ const resolvers = {
 
   Mutation: {
 
+    addUser: async(parent, {userInput}) => {
+      console.log("received arguments:", userInput);
+      try {
+        const user = await User.create(userInput);
+        const token = signToken(user);
+        return{
+          token, 
+          user
+        };
+      }
+      catch (error) {
+        console.error('Error creating user:', error);
+        throw new Error('Error creating user');
+      }
+    },
+    login: async (parent, {email, password}) => {
+      const user = await User.findOne({ email }).select('+password');
+
+      if(!user) {
+        throw new AuthenticationError('Not a valid user');
+      }
+
+      const correctPw = await user.isCorrectPassword(password);
+
+      if(!correctPw) {
+        throw new AuthenticationError('Incorrect password'); 
+      }
+
+      const token = signToken(user);
+      return {
+        token,
+        user
+      };
+    },
+   editUser: async (parent, { id, userInput }, context) => {
+      if (
+        context.user._id.toString() !== id &&
+        context.user.role !== 'admin'
+      ) {
+        throw new AuthenticationError('Not allowed');
+      }
+
+      try {
+        const user = await User.findById(id).select('+password');
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        Object.assign(user, userInput);
+
+        await user.save();
+
+        return user;
+      } catch (error) {
+        console.error('Error editing user:', error);
+        throw new Error('Failed to edit user');
+      }
+    },
+
     addGoal: async (_, { goalInput }) => {
       try {
-        const { goal_name, description, category, icon, icon_color, target_date, status, progress } = goalInput;
-        const newGoal = await Goal.create({
-          goal_name,
-          description,
-        //   category_id: category,
-          icon,
-          icon_color,
-          target_date,
-          status,
-          progress,
-        });
+        const newGoal = await Goal.create(goalInput);
         return newGoal;
       } catch (err) {
         console.error('Mongoose Error:', err);
@@ -88,20 +160,10 @@ const resolvers = {
 
     editGoal: async (_, { id, goalInput }) => {
       try {
-        const { goal_name, description, category, icon, icon_color, target_date, status, progress} = goalInput;
         const updatedGoal = await Goal.findByIdAndUpdate(
           id,
-          {
-            goal_name,
-            description,
-            // category_id: category,
-            icon,
-            icon_color,
-            target_date,
-            status,
-            progress,
-          },
-          { returnDocument: 'after' }
+          {...goalInput },
+          { new: true, runValidators:true }
         );
         if (!updatedGoal) throw new Error('Goal not found');
         return updatedGoal;
@@ -124,15 +186,8 @@ const resolvers = {
 
     addMilestone: async(_, { MilestoneInput }) => {
         try {
-            const { title, goal_id, description, target_date, completed, order } = MilestoneInput;
-            const newMilestone = await Milestone.create({
-                title,
-                goal_id, 
-                description,
-                target_date,
-                completed,
-                order
-            });
+            
+            const newMilestone = await Milestone.create(MilestoneInput);
             return newMilestone;
         } catch (err) {
             console.error('Mongoose error:', err);
@@ -141,18 +196,11 @@ const resolvers = {
     },
     editMilestone: async(_, {id, MilestoneInput}) => {
         try {
-            const { title, goal, description, target_date, completed, order} = MilestoneInput
+
             const updatedMilestone = await Milestone.findByIdAndUpdate(
                 id,
-                {
-                    title,
-                    goal_id: goal,
-                    description,
-                    target_date, 
-                    completed, 
-                    order
-                },
-                { new: true }
+                {...MilestoneInput},
+                { new: true, runValidators: true }
             );
             if (!updatedMilestone) throw new Error('Milestone not found');
             return updatedMilestone;
@@ -173,22 +221,7 @@ const resolvers = {
   },
   addTask: async(_, { TaskInput }) => {
         try {
-            const { title, description, goal_id, milestone_id, due_date, due_time, priority, recurrence_start, recurrence_rule, recurrence_time, timezone, recurrence_end, completed } = TaskInput;
-            const newTask = await Task.create({
-                title, 
-                description, 
-                goal_id, 
-                milestone_id, 
-                due_date,  
-                due_time,
-                priority, 
-                recurrence_rule,
-                recurrence_start,
-                timezone, 
-                recurrence_start, 
-                recurrence_end, 
-                completed
-            });
+            const newTask = await Task.create( TaskInput);
             return newTask;
         } catch (err) {
             console.error('Mongoose error:', err);
@@ -197,25 +230,10 @@ const resolvers = {
     },
   editTask: async(_, {id, TaskInput}) => {
         try {
-            const { title, description, goal, milestone, due_date, due_time, priority, recurrence_rule, recurrence_time, timezone, recurrence_start,recurrence_end, completed} = TaskInput
             const updatedTask = await Task.findByIdAndUpdate(
                 id,
-                {
-                    title,
-                    description,
-                    milestone_id: milestone,
-                    goal_id: goal,
-                    due_date,
-                    due_time,
-                    priority,
-                    recurrence_rule,
-                    recurrence_time,
-                    timezone,
-                    recurrence_start,
-                    recurrence_end,
-                    completed
-                },
-                { new: true }
+                {...TaskInput},
+                { new: true, runValidators: true }
             );
             if (!updatedTask) throw new Error('Task not found');
             return updatedTask;
