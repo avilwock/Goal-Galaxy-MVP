@@ -6,24 +6,19 @@ import { signToken, AuthenticationError } from '../utils/auth.js';
 const resolvers = {
   Query: {
 
-    me: async(_, args, context) => {
+    me: async (_, args, context) => {
+      console.log("CONTEXT USER:", context.user);
+
       if (!context.user) {
-        throw new AuthenticationError(
-          'Could not authenticate user'
-        )
+        throw new AuthenticationError('Could not authenticate user');
       }
 
       try {
-        const userData = await User.findOne({
-          _id: context.user._id
-        });
+        const userData = await User.findById(context.user.id || context.user._id);
 
         return userData;
       } catch (error) {
-        console.error(
-          'Error fetching user data:',
-          error
-        );
+        console.error('Error fetching user data:', error);
         throw new Error('Internal server error');
       }
     },
@@ -124,7 +119,7 @@ const resolvers = {
     },
    editUser: async (parent, { id, userInput }, context) => {
       if (
-        context.user._id.toString() !== id &&
+        context.user.id !== id &&
         context.user.role !== 'admin'
       ) {
         throw new AuthenticationError('Not allowed');

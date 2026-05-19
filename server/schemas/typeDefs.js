@@ -87,6 +87,7 @@ const typeDefs = `
     name: String!
     email: String!
     photo: String
+    password: String!
   }
 
   input GoalCategoryInput {

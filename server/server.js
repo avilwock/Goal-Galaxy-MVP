@@ -1,9 +1,15 @@
+import dotenv from 'dotenv';
+dotenv.config();
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import db from './config/connection.js';
 import typeDefs from './schemas/typeDefs.js';
 import resolvers from './schemas/resolvers.js';
-import { authMiddleware } from './utils/auth.js';
+// import { authMiddleware } from './utils/auth.js';
+
+import jwt from 'jsonwebtoken';
+import {signToken} from './utils/auth.js'
 
 const PORT = process.env.PORT || 3001;
 
@@ -17,10 +23,23 @@ const startServer = async () => {
     const { url } = await startStandaloneServer(server, {
       listen: { port: PORT },
       context: async ({ req }) => {
-        // run your auth middleware logic manually
-        await authMiddleware(req, {}, () => {});
-        return { user: req.user };
-      },
+      const token =
+        req.headers.authorization?.startsWith('Bearer ')
+          ? req.headers.authorization.split(' ')[1]
+          : req.headers.authorization || '';
+
+      let user = null;
+
+      if (token) {
+        try {
+          user = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (err) {
+          console.error('Invalid token', err);
+        }
+      }
+
+      return { user };
+    },
     });
 
     console.log(`🚀 GraphQL server ready at ${url}`);
