@@ -16,7 +16,6 @@ export const TASK_FIELDS = gql`
         completed
     }`
 
-
 export const MILESTONE_FIELDS = gql`
     fragment MilestoneFields on Milestone {
         _id
@@ -60,6 +59,33 @@ export const GOAL_FIELDS = gql`
         ...TaskFields
     }
 }`
+
+export const USER_FIELDS = gql`
+    fragment UserFields on User {
+        _id
+        username
+        name
+        email
+        photo
+        goals {
+        ...GoalFields
+        }
+        tasks {
+        ...TaskFields
+        }
+    }`
+
+export const QUERY_ME = gql`
+  ${TASK_FIELDS}
+  ${MILESTONE_FIELDS}
+  ${GOAL_FIELDS}
+  ${USER_FIELDS}
+  query me {
+    me {
+      ...UserFields
+    }
+  }
+`;
 
 export const QUERY_GOAL = gql`
 ${TASK_FIELDS}
