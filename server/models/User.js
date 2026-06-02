@@ -52,7 +52,11 @@ const userSchema = new Schema({
     photo: {
         type: String,
         default: ""
-    }
+    },
+    goals: [{
+        type:  mongoose.Schema.Types.ObjectId,
+        ref: 'Goal'
+    }]
 }, {
     timestamps: true
 });

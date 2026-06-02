@@ -14,7 +14,6 @@ const taskSchema = new Schema({
                 },
                 message: 'Title cannot be empty',
             },
-            description: "Task Name"
         },
         description: {
             type: String,
@@ -28,6 +27,11 @@ const taskSchema = new Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Milestone',
             description: "Reference to Milestone (optional)"
+        },
+        user_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
         },
         due_date: {
             type: Date
@@ -51,7 +55,7 @@ const taskSchema = new Schema({
         },
         timezone: {
             type: String,
-            default: "America/Los Angeles"
+            default: "America/Los_Angeles"
         },
         recurrence_start: {
             type: Date,

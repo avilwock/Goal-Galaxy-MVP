@@ -143,13 +143,22 @@ const resolvers = {
       }
     },
 
-    addGoal: async (_, { goalInput }) => {
+   addGoal: async (_, { goalInput }, context) => {
+    console.log("USER IN CONTEXT:", context.user);
       try {
-        const newGoal = await Goal.create(goalInput);
+        if (!context.user) {
+          throw new AuthenticationError('Not logged in');
+        }
+
+        const newGoal = await Goal.create({
+          ...goalInput,
+          user: context.user.id
+        });
+
         return newGoal;
       } catch (err) {
-        console.error('Mongoose Error:', err);
-        throw new Error('Error creating Goal');
+        console.error('Mongoose create goal failed:', err);
+        throw err;
       }
     },
 
@@ -255,15 +264,24 @@ const resolvers = {
     },
     tasks: async(parent) => {
       return await Task.find({milestone_id: parent._id});
-    }
+    },
   },
   Goal: {
+    
     milestones: async(parent) => {
       return await Milestone.find({goal_id: parent._id})
     },
     tasks: async(parent) => {
       return await Task.find({goal_id: parent._id})
-    } 
+    },
+    user: async(parent) => {
+      return await User.findById(parent.user);
+    }
+  },
+  Task: {
+    user: async (parent) => {
+      return await User.findById(parent.user);
+    }
   }
 
 };

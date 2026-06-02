@@ -38,6 +38,7 @@ const typeDefs = `
     target_date: Date
     status: String
     progress: Int
+    user: User
   }
 
   type GoalCategory {

@@ -43,7 +43,12 @@ const goalSchema = new Schema ({
   tasks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task'
-  }]
+  }],
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  }
 },
 { 
     timestamps: true 
