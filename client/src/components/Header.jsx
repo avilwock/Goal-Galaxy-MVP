@@ -15,33 +15,42 @@ const Header = ({ setUser }) => {
   const token = localStorage.getItem('token');
 
   return (
-    <header className="header bg-info mb-4 py-3">
-      <div className="container flex-column align-center text-center">
+    <header className="bg-sky-500 py-4 mb-6">
+      <div className="max-w-5xl mx-auto flex flex-col items-center text-center gap-4">
 
         <Link to="/">
-          <h1 className="m-0" style={{ fontSize: '3rem' }}>
+          <h1 className="text-5xl font-bold text-white">
             Goal Planner
           </h1>
         </Link>
 
-        <nav className="nav-links">
+        <nav className="flex flex-wrap justify-center gap-3">
 
-          <Link className="btn btn-lg btn-primary m-2" to="/">
+          <Link
+            className="px-4 py-2 bg-white text-sky-600 font-semibold rounded-lg hover:bg-sky-100"
+            to="/"
+          >
             Home
           </Link>
 
           {token ? (
             <>
-              <Link className="btn btn-lg btn-primary m-2" to="/goals">
+              <Link
+                className="px-4 py-2 bg-white text-sky-600 font-semibold rounded-lg hover:bg-sky-100"
+                to="/goals"
+              >
                 Goals
               </Link>
 
-              <Link className="btn btn-lg btn-primary m-2" to="/tasks">
+              <Link
+                className="px-4 py-2 bg-white text-sky-600 font-semibold rounded-lg hover:bg-sky-100"
+                to="/tasks"
+              >
                 Tasks
               </Link>
 
               <button
-                className="btn btn-lg btn-light m-2"
+                className="px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600"
                 onClick={logout}
               >
                 Logout
@@ -49,11 +58,17 @@ const Header = ({ setUser }) => {
             </>
           ) : (
             <>
-              <Link className="btn btn-lg btn-primary m-2" to="/login">
+              <Link
+                className="px-4 py-2 bg-white text-sky-600 font-semibold rounded-lg hover:bg-sky-100"
+                to="/login"
+              >
                 Login
               </Link>
 
-              <Link className="btn btn-lg btn-light m-2" to="/signup">
+              <Link
+                className="px-4 py-2 bg-white text-sky-600 font-semibold rounded-lg hover:bg-sky-100"
+                to="/signup"
+              >
                 Signup
               </Link>
             </>

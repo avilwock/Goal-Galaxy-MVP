@@ -13,7 +13,6 @@ import GoalTaskWidget from "../components/GoalTaskWidget";
 import MilestoneWidget from "../components/MilestoneWidget";
 import AddMilestoneForm from "../components/AddMilestone";
 import AddTaskForm from "../components/AddTask";
-import Login from '../components/Login';
 
 /* ---------------- EDIT GOAL FORM ---------------- */
 
