@@ -278,11 +278,6 @@ const resolvers = {
       return await User.findById(parent.user);
     }
   },
-  Task: {
-    user: async (parent) => {
-      return await User.findById(parent.user);
-    }
-  }
 
 };
 
