@@ -17,6 +17,18 @@ ${USER_FIELDS}
         }
     }`
 
+export const LOGIN = gql`
+    mutation login ($email: String!, $password: String!) {
+        login(email: $email, password: $password) {
+            token
+            user {
+                _id
+                username
+                email
+            }
+        }
+    }`
+
 export const ADD_GOAL = gql`
   mutation addGoal($goalInput: GoalInput!) {
     addGoal(goalInput: $goalInput) {

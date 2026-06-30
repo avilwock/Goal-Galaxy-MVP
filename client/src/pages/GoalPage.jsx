@@ -2,6 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { useState } from "react";
 
+
 import { QUERY_GOAL } from "../utils/queries";
 import { DELETE_GOAL, EDIT_GOAL } from "../utils/mutations";
 
@@ -12,6 +13,7 @@ import GoalTaskWidget from "../components/GoalTaskWidget";
 import MilestoneWidget from "../components/MilestoneWidget";
 import AddMilestoneForm from "../components/AddMilestone";
 import AddTaskForm from "../components/AddTask";
+import Login from '../components/Login';
 
 /* ---------------- EDIT GOAL FORM ---------------- */
 
