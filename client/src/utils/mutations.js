@@ -2,12 +2,17 @@ import { gql } from '@apollo/client';
 import { TASK_FIELDS, MILESTONE_CREATE_FIELDS, GOAL_FIELDS, MILESTONE_FIELDS, USER_FIELDS } from './queries.js';
 
 export const ADD_USER = gql`
-${USER_FIELDS}
   mutation addUser($userInput: UserInput!) {
     addUser(userInput: $userInput) {
-        ...UserFields
+      token
+      user {
+        _id
+        username
+        email
+      }
     }
-  }`
+  }
+`;
 
   export const EDIT_USER = gql`
    ${USER_FIELDS}

@@ -21,7 +21,6 @@ const userSchema = new Schema({
     },
     name: {
         type: String,
-        required: true,
         trim: true,
         validate: {
             validator: function(value) {

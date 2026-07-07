@@ -18,6 +18,7 @@ const Login= () => {
         const token = data.login.token;
 
         localStorage.setItem('token', token);
+        window.location.href="/";
 
         if (Login) Login(data.login.user);
     };

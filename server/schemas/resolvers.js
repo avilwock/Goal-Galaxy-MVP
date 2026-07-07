@@ -93,9 +93,9 @@ const resolvers = {
           user
         };
       }
-      catch (error) {
+     catch (error) {
         console.error('Error creating user:', error);
-        throw new Error('Error creating user');
+        throw new Error(error.message);
       }
     },
     login: async (parent, {email, password}) => {

@@ -21,7 +21,7 @@ const typeDefs = `
   type User {
     _id: ID!
     username: String!
-    name: String!
+    name: String
     email: String!
     photo: String
   }
@@ -85,7 +85,7 @@ const typeDefs = `
 
   input UserInput {
     username: String!
-    name: String!
+    name: String
     email: String!
     photo: String
     password: String!
