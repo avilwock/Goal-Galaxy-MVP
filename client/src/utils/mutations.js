@@ -35,6 +35,9 @@ export const LOGIN = gql`
     }`
 
 export const ADD_GOAL = gql`
+${GOAL_FIELDS}
+${MILESTONE_FIELDS}
+${TASK_FIELDS}
   mutation addGoal($goalInput: GoalInput!) {
     addGoal(goalInput: $goalInput) {
        ...GoalFields

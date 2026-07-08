@@ -18,7 +18,7 @@ function App() {
       <Route path ="/login" element={<Login />}/>
       <Route path ="/signup" element={<Signup />}/>
       <Route path ="/tasks" element={<TasksWidget />}/>
-      {/* <Route path ="/GoalPage" element={<GoalPage />}/> */}
+      <Route path="/goal/:id" element={<GoalPage />} />
     </Routes>
     </>
   );

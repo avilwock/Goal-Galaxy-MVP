@@ -23,23 +23,26 @@ const startServer = async () => {
     const { url } = await startStandaloneServer(server, {
       listen: { port: PORT },
       context: async ({ req }) => {
-      const token =
-        req.headers.authorization?.startsWith('Bearer ')
-          ? req.headers.authorization.split(' ')[1]
-          : req.headers.authorization || '';
+  const token =
+    req.headers.authorization?.startsWith('Bearer ')
+      ? req.headers.authorization.split(' ')[1]
+      : req.headers.authorization || '';
 
-      let user = null;
+  console.log("TOKEN RECEIVED:", token);
 
-      if (token) {
-        try {
-          user = jwt.verify(token, process.env.JWT_SECRET);
-        } catch (err) {
-          console.error('Invalid token', err);
-        }
-      }
+  let user = null;
 
-      return { user };
-    },
+  if (token) {
+    try {
+      user = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("VERIFIED USER:", user);
+    } catch (err) {
+      console.error("JWT ERROR:", err.message);
+    }
+  }
+
+  return { user };
+},
     });
 
     console.log(`🚀 GraphQL server ready at ${url}`);

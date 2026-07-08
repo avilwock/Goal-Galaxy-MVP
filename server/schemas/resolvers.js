@@ -22,61 +22,136 @@ const resolvers = {
         throw new Error('Internal server error');
       }
     },
-    goals: async () => {
+    goals: async (_, args, context) => {
+      if (!context.user) {
+        throw new AuthenticationError("Not logged in");
+      }
+
       try {
-        return await Goal.find(); //add back with .populate('category_id')
+        return await Goal.find({
+          user: context.user.id
+        }); //add back with .populate('category_id')
       } catch (err) {
         console.error(err);
         throw new Error('Error fetching goals');
       }
     },
 
-    goal: async (_, { id }) => {
-      try {
-        const goal = await Goal.findById(id);
+    goal: async (_, { id }, context) => {
+  if (!context.user) {
+    throw new AuthenticationError("Not logged in");
+  }
 
-        const tasks = await Task.find({ goal_id: id });
+  try {
+    const goal = await Goal.findOne({
+      _id: id,
+      user: context.user.id
+    });
 
-        return {
-          ...goal.toObject(),
-          tasks
-        };
-      } catch (err) {
-        console.error(err);
-        throw new Error('Goal not found');
-      }
-    },
-    milestones: async() => {
-      try {
-        return await Milestone.find();
-      } catch (err) {
-        console.error(err);
-        throw new Error ('Error fetching Milestones')
-      }
-    },
-    milestone: async(_, { id }) => {
-      try {
-        return await Milestone.findById(id);
-      } catch (err) {
-        console.error(err);
-        throw new Error('Milestone not found')
-      }
-    },
-    tasks: async() => {
-      try {
-        return await Task.find();
-      } catch (err) {
-        throw new Error('Error fetching Tasks')
-      }
-    },
-    task: async(_, { id }) => {
-      try {
-        return await Task.findById(id);
-      } catch (err) {
-        console.error(err);
-        throw new Error('Task no found')
-      }
+    if (!goal) {
+      throw new Error("Goal not found");
     }
+
+    const tasks = await Task.find({ goal_id: id });
+
+    return {
+      ...goal.toObject(),
+      tasks
+    };
+
+  } catch (err) {
+    console.error(err);
+    throw new Error("Goal not found");
+  }
+},
+    milestones: async (_, args, context) => {
+  if (!context.user) {
+    throw new AuthenticationError("Not logged in");
+  }
+
+  try {
+    const userGoals = await Goal.find({
+      user: context.user.id
+    }).select("_id");
+
+    const goalIds = userGoals.map((goal) => goal._id);
+
+    return await Milestone.find({
+      goal_id: { $in: goalIds }
+    });
+
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error fetching Milestones");
+  }
+},
+ milestone: async (_, { id }, context) => {
+  if (!context.user) {
+    throw new AuthenticationError("Not logged in");
+  }
+
+  try {
+    const milestone = await Milestone.findById(id).populate("goal_id");
+
+    if (!milestone) {
+      throw new Error("Milestone not found");
+    }
+
+    if (milestone.goal_id.user.toString() !== context.user.id) {
+      throw new AuthenticationError("Not authorized");
+    }
+
+    return milestone;
+
+  } catch (err) {
+    console.error(err);
+    throw new Error("Milestone not found");
+  }
+},
+   tasks: async (_, args, context) => {
+  if (!context.user) {
+    throw new AuthenticationError("Not logged in");
+  }
+
+  try {
+    const userGoals = await Goal.find({
+      user: context.user.id
+    }).select("_id");
+
+    const goalIds = userGoals.map((goal) => goal._id);
+
+    return await Task.find({
+      goal_id: { $in: goalIds }
+    });
+
+  } catch (err) {
+    console.error(err);
+    throw new Error("Error fetching Tasks");
+  }
+},
+   task: async (_, { id }, context) => {
+  if (!context.user) {
+    throw new AuthenticationError("Not logged in");
+  }
+
+  try {
+    const task = await Task.findById(id).populate("goal_id");
+
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    if (task.goal_id.user.toString() !== context.user.id) {
+      throw new AuthenticationError("Not authorized");
+    }
+
+    return task;
+
+  } catch (err) {
+    console.error(err);
+    throw new Error("Task not found");
+  }
+},
 
  
   },
