@@ -7,7 +7,7 @@ import Header from './components/Header'
 import Login from "./components/Login"
 import Signup from "./pages/Signup"
 import TasksWidget from "./components/TasksWidget"
-import Goals from "./pages/GoalPage"
+
 
 function App() {
   return (
@@ -15,11 +15,10 @@ function App() {
     <Header />
     <Routes>
       <Route path="/" element={<GoalsList />} />
-      <Route path="/goal/:id" element={<GoalPage />}/>
       <Route path ="/login" element={<Login />}/>
       <Route path ="/signup" element={<Signup />}/>
       <Route path ="/tasks" element={<TasksWidget />}/>
-      <Route path ="/goals" element={<Goals />}/>
+      {/* <Route path ="/GoalPage" element={<GoalPage />}/> */}
     </Routes>
     </>
   );

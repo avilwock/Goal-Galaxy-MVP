@@ -89,11 +89,14 @@ const EditGoalForm = ({ goal, onClose }) => {
 
 const GoalPage = () => {
   const { id } = useParams();
+  console.log("GoalPage id:", id);
   const navigate = useNavigate();
+  
 
   const { loading, error, data } = useQuery(QUERY_GOAL, {
     variables: { id },
   });
+  
 
   const [deleteGoal] = useMutation(DELETE_GOAL);
 

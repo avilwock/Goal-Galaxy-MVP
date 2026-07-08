@@ -37,7 +37,7 @@ const Header = ({ setUser }) => {
             <>
               <Link
                 className="px-4 py-2 bg-white text-sky-600 font-semibold rounded-lg hover:bg-sky-100"
-                to="/goals"
+                to="/"
               >
                 Goals
               </Link>
