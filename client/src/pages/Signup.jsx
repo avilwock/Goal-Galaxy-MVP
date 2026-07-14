@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react"
 import { ADD_USER } from "../utils/mutations"
+import Auth from "../utils/auth"
 
 function Signup() {
     const [addUser, {error}] = useMutation (ADD_USER)
@@ -22,7 +23,7 @@ function Signup() {
                 },
             });
 
-        localStorage.setItem("token", data.addUser.token);
+        Auth.login(data.addUser.token)
 
         console.log(data.addUser.user);
         } catch (err) {

@@ -6,13 +6,14 @@ const Header = ({ setUser }) => {
   const logout = (e) => {
     e.preventDefault();
 
-    localStorage.removeItem('token');
+    localStorage.removeItem('id_token');
     setUser(null);
 
     navigate('/');
+    window.location.reload();
   };
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('id_token');
 
   return (
     <header className="bg-sky-500 py-4 mb-6">

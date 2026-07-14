@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Routes, Route } from 'react-router-dom';
 import GoalsList from './components/GoalsList';
 // import TestGoal from './components/TestGoal';
@@ -10,9 +10,11 @@ import TasksWidget from "./components/TasksWidget"
 
 
 function App() {
+
+  const [, setUser] = useState(null);
   return (
     <>
-    <Header />
+    <Header setUser={setUser} />
     <Routes>
       <Route path="/" element={<GoalsList />} />
       <Route path ="/login" element={<Login />}/>
