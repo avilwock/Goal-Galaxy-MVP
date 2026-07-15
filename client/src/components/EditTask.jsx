@@ -1,18 +1,34 @@
-import { useState } from 'react';
-import { useMutation } from '@apollo/client/react';
-import { EDIT_TASK } from '../utils/mutations';
+import { useState } from "react";
+import { useMutation } from "@apollo/client/react";
+import { EDIT_TASK } from "../utils/mutations";
 
 const EditTaskForm = ({ task, setShowForm }) => {
+  const [title, setTitle] = useState(task.title || "");
+  const [description, setDescription] = useState(task.description || "");
+  const [dueDate, setDueDate] = useState(
+    task.due_date?.slice(0, 10) || ""
+  );
+  const [dueTime, setDueTime] = useState(task.due_time || "");
+  const [priority, setPriority] = useState(task.priority || "");
 
-  const [title, setTitle] = useState(task.title || '');
-  const [description, setDescription] = useState(task.description || '');
-  const [dueDate, setDueDate] = useState(task.due_date?.slice(0, 10) || '');
-  const [dueTime, setDueTime] = useState(task.due_time || '');
-  const [priority, setPriority] = useState(task.priority || '');
-  const [recurrence, setRecurrence] = useState(task.recurrence || '');
-  const [recurrenceDays, setRecurrenceDays] = useState(task.recurrence_days || '');
-  const [recurrenceEndDate, setRecurrenceEndDate] = useState(task.recurrence_end_date?.slice(0, 10) || '');
-  const [completed, setCompleted] = useState(task.completed || false);
+  // Convert the saved RRULE value into something the select box understands.
+  const [recurrence, setRecurrence] = useState(
+    task.recurrence_rule === "FREQ=DAILY"
+      ? "daily"
+      : task.recurrence_rule === "FREQ=WEEKLY"
+      ? "weekly"
+      : task.recurrence_rule === "FREQ=MONTHLY"
+      ? "monthly"
+      : ""
+  );
+
+  const [recurrenceEnd, setRecurrenceEnd] = useState(
+    task.recurrence_end?.slice(0, 10) || ""
+  );
+
+  const [completed, setCompleted] = useState(
+    task.completed || false
+  );
 
   const [editTask] = useMutation(EDIT_TASK);
 
@@ -29,18 +45,26 @@ const EditTaskForm = ({ task, setShowForm }) => {
             due_date: dueDate || null,
             due_time: dueTime || null,
             priority: priority || null,
-            recurrence: recurrence || null,
-            recurrence_days: recurrenceDays ? parseInt(recurrenceDays) : null,
-            recurrence_end_date: recurrenceEndDate || null,
+
+            recurrence_rule:
+              recurrence === "daily"
+                ? "FREQ=DAILY"
+                : recurrence === "weekly"
+                ? "FREQ=WEEKLY"
+                : recurrence === "monthly"
+                ? "FREQ=MONTHLY"
+                : null,
+
+            recurrence_end: recurrenceEnd || null,
+
             completed,
             goal_id: task.goal_id || null,
-            milestone_id: task.milestone_id || null
-          }
-        }
+            milestone_id: task.milestone_id || null,
+          },
+        },
       });
 
       setShowForm(false);
-
     } catch (err) {
       console.error(err);
     }
@@ -51,7 +75,6 @@ const EditTaskForm = ({ task, setShowForm }) => {
       onSubmit={handleSubmit}
       className="bg-gray-800 p-6 rounded shadow-md max-w-md mx-auto my-4 relative"
     >
-
       <button
         type="button"
         onClick={() => setShowForm(false)}
@@ -113,16 +136,9 @@ const EditTaskForm = ({ task, setShowForm }) => {
       </select>
 
       <input
-        type="number"
-        value={recurrenceDays}
-        onChange={(e) => setRecurrenceDays(e.target.value)}
-        className="w-full mb-2 p-2 border rounded"
-      />
-
-      <input
         type="date"
-        value={recurrenceEndDate}
-        onChange={(e) => setRecurrenceEndDate(e.target.value)}
+        value={recurrenceEnd}
+        onChange={(e) => setRecurrenceEnd(e.target.value)}
         className="w-full mb-2 p-2 border rounded"
       />
 
@@ -141,7 +157,6 @@ const EditTaskForm = ({ task, setShowForm }) => {
       >
         Save Changes
       </button>
-
     </form>
   );
 };

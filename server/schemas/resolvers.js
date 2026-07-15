@@ -298,15 +298,23 @@ const resolvers = {
       throw new Error('Error deleting Milestone');
     }
   },
-  addTask: async(_, { TaskInput }) => {
-        try {
-            const newTask = await Task.create( TaskInput);
-            return newTask;
-        } catch (err) {
-            console.error('Mongoose error:', err);
-            throw new Error('Error creating Task');
-        }
-    },
+  addTask: async (_, { TaskInput }, context) => {
+      try {
+          if (!context.user) {
+              throw new Error("Not logged in");
+          }
+
+          const newTask = await Task.create({
+              ...TaskInput,
+              user_id: context.user.id,
+          });
+
+          return newTask;
+      } catch (err) {
+          console.error("Mongoose error:", err);
+          throw new Error("Error creating Task");
+      }
+  },
   editTask: async(_, {id, TaskInput}) => {
         try {
             const updatedTask = await Task.findByIdAndUpdate(
