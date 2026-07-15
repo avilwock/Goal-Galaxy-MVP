@@ -7,6 +7,7 @@ import Header from './components/Header'
 import Login from "./components/Login"
 import Signup from "./pages/Signup"
 import TasksWidget from "./components/TasksWidget"
+import HomePage from "./pages/HomePage"
 
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
     <>
     <Header setUser={setUser} />
     <Routes>
-      <Route path="/" element={<GoalsList />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/GoalsList" element={<GoalsList />} />
       <Route path ="/login" element={<Login />}/>
       <Route path ="/signup" element={<Signup />}/>
       <Route path ="/tasks" element={<TasksWidget />}/>

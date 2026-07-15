@@ -10,7 +10,7 @@ const Header = ({ setUser }) => {
     setUser(null);
 
     navigate('/');
-    window.location.reload();
+    window.location.reload
   };
 
   const token = localStorage.getItem('id_token');
@@ -38,7 +38,7 @@ const Header = ({ setUser }) => {
             <>
               <Link
                 className="px-4 py-2 bg-white text-sky-600 font-semibold rounded-lg hover:bg-sky-100"
-                to="/"
+                to="/GoalsList"
               >
                 Goals
               </Link>
