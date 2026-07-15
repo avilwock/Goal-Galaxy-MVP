@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { EDIT_TASK } from "../utils/mutations";
+import { QUERY_TASKS } from "../utils/queries";
 
 const EditTaskForm = ({ task, setShowForm }) => {
   const [title, setTitle] = useState(task.title || "");
@@ -30,7 +31,13 @@ const EditTaskForm = ({ task, setShowForm }) => {
     task.completed || false
   );
 
-  const [editTask] = useMutation(EDIT_TASK);
+  const [editTask] = useMutation(EDIT_TASK, {
+  refetchQueries: [
+    {
+      query: QUERY_TASKS
+    }
+  ]
+});
 
   const handleSubmit = async (e) => {
     e.preventDefault();

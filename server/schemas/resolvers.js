@@ -114,14 +114,8 @@ const resolvers = {
   }
 
   try {
-    const userGoals = await Goal.find({
-      user: context.user.id
-    }).select("_id");
-
-    const goalIds = userGoals.map((goal) => goal._id);
-
     return await Task.find({
-      goal_id: { $in: goalIds }
+      user_id: context.user.id
     });
 
   } catch (err) {
@@ -141,12 +135,11 @@ const resolvers = {
       throw new Error("Task not found");
     }
 
-    if (task.goal_id.user.toString() !== context.user.id) {
+    if (task.user_id.toString() !== context.user.id) {
       throw new AuthenticationError("Not authorized");
     }
 
     return task;
-
   } catch (err) {
     console.error(err);
     throw new Error("Task not found");

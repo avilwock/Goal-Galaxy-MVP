@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client/react";
 
 import { ADD_TASK } from "../utils/mutations";
-import { QUERY_GOALS, QUERY_MILESTONES } from "../utils/queries";
+import { QUERY_GOALS, QUERY_MILESTONES, QUERY_TASKS } from "../utils/queries";
 import { buildRRule } from "../utils/recurrence";
 
 const AddTaskForm = ({
@@ -51,23 +51,24 @@ const AddTaskForm = ({
   /* ---------------- MUTATION ---------------- */
 
   const [addTask] = useMutation(ADD_TASK, {
-    update(cache, { data: { addTask } }) {
-      if (!goalContextId) return;
+  update(cache, { data: { addTask } }) {
+    const existingTasks = cache.readQuery({
+      query: QUERY_TASKS
+    });
 
-      cache.modify({
-        id: cache.identify({
-          __typename: "Goal",
-          _id: goalContextId
-        }),
-        fields: {
-          tasks(existing = [], { toReference }) {
-            return [toReference(addTask, true), ...existing];
-          }
+    if (existingTasks) {
+      cache.writeQuery({
+        query: QUERY_TASKS,
+        data: {
+          tasks: [
+            addTask,
+            ...existingTasks.tasks
+          ]
         }
       });
     }
-  });
-
+  }
+});
   /* ---------------- WEEKDAY TOGGLE ---------------- */
 
   const toggleDay = (day) => {

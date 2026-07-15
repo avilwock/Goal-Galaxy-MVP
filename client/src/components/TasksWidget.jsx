@@ -4,15 +4,15 @@ import { formatDate } from "../utils/date";
 import { useQuery, useMutation } from "@apollo/client/react";
 import { useState } from "react";
 import AddTaskForm from "./AddTask.jsx";
-import { DELETE_TASK } from "../utils/mutations.js";
+import { EDIT_TASK, DELETE_TASK } from "../utils/mutations.js";
+import EditTaskForm from "./EditTask.jsx"
 
 const TaskWidget = () => {
   const { id } = useParams();
   const [showTask, setShowTask] = useState(false);
+  const [editTask, setEditTask] = useState(null);
 
-  const { loading, error, data } = useQuery(QUERY_TASKS, {
-    variables: { id },
-  });
+  const { loading, error, data } = useQuery(QUERY_TASKS);
 
   const [deleteTask] = useMutation(DELETE_TASK, {
     refetchQueries: [{ query: QUERY_TASKS, variables: { id } }],
@@ -47,6 +47,12 @@ const TaskWidget = () => {
       </div>
 
       {showTask && <AddTaskForm setShowForm={setShowTask} />}
+      {editTask && (
+        <EditTaskForm
+          task={editTask}
+          setShowForm={() => setEditTask(null)}
+        />
+      )}
 
       {/* Header */}
       <div className="flex font-semibold border-b pb-2 mb-2">
@@ -76,13 +82,22 @@ const TaskWidget = () => {
           </div>
           <div className="flex-1">{task.due_time}</div>
 
-          <div className="w-12 flex justify-end">
+          <div className="flex gap-2 justify-end">
+
+            <button
+              onClick={() => setEditTask(task)}
+              className="text-blue-500 hover:text-blue-700 font-bold"
+            >
+              ✎
+            </button>
+
             <button
               onClick={() => handleDelete(task._id)}
               className="text-red-500 hover:text-red-700 font-bold"
             >
               ✕
             </button>
+
           </div>
         </div>
       ))}
