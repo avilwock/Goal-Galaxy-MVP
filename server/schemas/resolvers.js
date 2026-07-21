@@ -108,7 +108,7 @@ const resolvers = {
     throw new Error("Milestone not found");
   }
 },
-   tasks: async (_, args, context) => {
+  tasks: async (_, args, context) => {
   if (!context.user) {
     throw new AuthenticationError("Not logged in");
   }
@@ -116,7 +116,7 @@ const resolvers = {
   try {
     return await Task.find({
       user_id: context.user.id
-    });
+    }).populate("goal_id");
 
   } catch (err) {
     console.error(err);
@@ -354,6 +354,12 @@ const resolvers = {
       return await User.findById(parent.user);
     }
   },
+  Task: {
+  goal: async(parent) => {
+    if (!parent.goal_id) return null;
+    return await Goal.findById(parent.goal_id);
+  },
+},
 
 };
 

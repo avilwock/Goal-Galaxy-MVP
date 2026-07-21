@@ -239,7 +239,7 @@ const GoalPage = () => {
 
             {showMilestoneForm && (
               <AddMilestoneForm
-                goalId={goal._id}
+                goal={goal}
                 setShowForm={setShowMilestoneForm}
               />
             )}

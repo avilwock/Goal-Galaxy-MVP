@@ -1,20 +1,29 @@
 import { gql } from '@apollo/client';
 
 export const TASK_FIELDS = gql`
-    fragment TaskFields on Task {
-        _id
-        title
-        description
-        due_date
-        due_time
-        priority
-        recurrence_rule
-        recurrence_time
-        timezone
-        recurrence_start
-        recurrence_end
-        completed
-    }`
+  fragment TaskFields on Task {
+    _id
+    title
+    description
+    due_date
+    due_time
+    priority
+    recurrence_rule
+    recurrence_time
+    timezone
+    recurrence_start
+    recurrence_end
+    completed
+    goal {
+      _id
+      goal_name
+    }
+    milestone {
+      _id
+      title
+    }
+  }
+`;
 
 export const MILESTONE_FIELDS = gql`
     fragment MilestoneFields on Milestone {

@@ -3,25 +3,26 @@ import { useMutation } from '@apollo/client/react';
 import { ADD_MILESTONE } from '../utils/mutations';
 import { QUERY_GOALS } from '../utils/queries';
 
-const AddMilestoneForm = ({setShowForm, goalId}) => {
+const AddMilestoneForm = ({setShowForm, goal}) => {
+    const nextOrder= (goal?.milestones?.length ||0)+1;
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const[target_date, setTargetDate] = useState('')
     const [completed, setCompleted] = useState(false)
-    const [order, setOrder] = useState('')
 
     const [ addMilestone ] = useMutation(ADD_MILESTONE, {
         update(cache, { data: { addMilestone }}) {
             const existingGoals = cache.readQuery({ query: QUERY_GOALS });
             if(existingGoals) {
-                const newGoals = existingGoals.goals.map(goal => {
-                    if(goal.id === goalId) {
+                const newGoals = existingGoals.goals.map((g) => {
+                    if (g._id === goal._id) {
                         return {
-                            ...goal,
-                            milestones: [addMilestone, ...(goal.milestones || [])],
+                            ...g,
+                            milestones: [addMilestone, ...(g.milestones || [])],
                         };
                     }
-                    return goal;
+
+                    return g;
                 });
                 cache.writeQuery({
                     query: QUERY_GOALS,
@@ -39,12 +40,12 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
             await addMilestone({
                 variables: {
                     MilestoneInput: {
-                        goal_id: goalId,
+                        goal_id: goal._id,
                         title,
                         description,
                         target_date: target_date || null,
                         completed: !!completed,
-                        order: order ? parseInt(order): null
+                        order: nextOrder
                     }
                 },
                 refetchQueries: [{query: QUERY_GOALS }],
@@ -54,7 +55,6 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
             setDescription('');
             setTargetDate('');
             setCompleted(false);
-            setOrder('');
             setShowForm(false);
         } catch (err) {
             console.error(err);
@@ -117,16 +117,7 @@ const AddMilestoneForm = ({setShowForm, goalId}) => {
                 onChange = {(e) => setCompleted(e.target.checked)}
             />
         </div>
-        <div>
-            <label>
-                Order
-            </label>
-            <input
-                type="number"
-                value = {order}
-                onChange = {(e) => setOrder(e.target.value)}
-            />
-        </div>
+        
         <button
             type="submit"
             className="border rounded-lg bg-blue-500 hover:bg-blue-600 px-4 py-2 text-white"

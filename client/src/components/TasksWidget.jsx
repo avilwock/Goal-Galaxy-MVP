@@ -62,6 +62,7 @@ const TaskWidget = () => {
         <div className="flex-1">Priority</div>
         <div className="flex-1">Status</div>
         <div className="flex-1">Due Time</div>
+        <div ClassNAme="flex-1">Goal</div>
         <div className="w-12"></div>
       </div>
 
@@ -81,6 +82,9 @@ const TaskWidget = () => {
             {task.completed ? "Done" : "Active"}
           </div>
           <div className="flex-1">{task.due_time}</div>
+          <div className="flex-1">
+            {task.goal?.goal_name || "No Goal"}
+          </div>
 
           <div className="flex gap-2 justify-end">
 

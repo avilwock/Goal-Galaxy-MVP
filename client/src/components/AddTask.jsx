@@ -8,7 +8,8 @@ import { buildRRule } from "../utils/recurrence";
 const AddTaskForm = ({
   setShowForm,
   goalContextId = null,
-  milestoneContextId = null
+  milestoneContextId = null,
+  onTaskAdded
 }) => {
   /* ---------------- CORE FIELDS ---------------- */
 
@@ -50,24 +51,16 @@ const AddTaskForm = ({
 
   /* ---------------- MUTATION ---------------- */
 
-  const [addTask] = useMutation(ADD_TASK, {
-  update(cache, { data: { addTask } }) {
-    const existingTasks = cache.readQuery({
-      query: QUERY_TASKS
-    });
-
-    if (existingTasks) {
-      cache.writeQuery({
-        query: QUERY_TASKS,
-        data: {
-          tasks: [
-            addTask,
-            ...existingTasks.tasks
-          ]
-        }
-      });
-    }
-  }
+ const [addTask] = useMutation(ADD_TASK, {
+  refetchQueries: goalContextId
+    ? [
+        {
+          query: QUERY_GOALS,
+          variables: { id: goalContextId },
+        },
+      ]
+    : [{ query: QUERY_TASKS }],
+  awaitRefetchQueries: true,
 });
   /* ---------------- WEEKDAY TOGGLE ---------------- */
 
@@ -128,6 +121,9 @@ const AddTaskForm = ({
         }
       }
     });
+    if(onTaskAdded) {
+      await onTaskAdded();
+    }
 
     /* RESET */
     setTitle("");
