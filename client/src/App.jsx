@@ -8,6 +8,7 @@ import Login from "./components/Login"
 import Signup from "./pages/Signup"
 import TasksWidget from "./components/TasksWidget"
 import HomePage from "./pages/HomePage"
+import Calendar from "./components/Calendar"
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
       <Route path ="/signup" element={<Signup />}/>
       <Route path ="/tasks" element={<TasksWidget />}/>
       <Route path="/goal/:id" element={<GoalPage />} />
+      <Route path ="/Calendar" element={<Calendar />} />
     </Routes>
     </>
   );

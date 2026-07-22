@@ -62,7 +62,7 @@ const TaskWidget = () => {
         <div className="flex-1">Priority</div>
         <div className="flex-1">Status</div>
         <div className="flex-1">Due Time</div>
-        <div ClassNAme="flex-1">Goal</div>
+        <div className="flex-1">Goal</div>
         <div className="w-12"></div>
       </div>
 
