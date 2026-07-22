@@ -25,6 +25,7 @@ function App() {
       <Route path ="/tasks" element={<TasksWidget />}/>
       <Route path="/goal/:id" element={<GoalPage />} />
       <Route path ="/Calendar" element={<Calendar />} />
+      <Route path="/tasks/date/:date" element={<TasksWidget />} />
     </Routes>
     </>
   );

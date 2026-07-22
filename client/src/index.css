@@ -14,3 +14,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.fc-daygrid-day-frame {
+  height: 120px;
+  overflow: hidden;
+}
+
+.fc-daygrid-day-events {
+  overflow: hidden;
+}

@@ -99,8 +99,9 @@ const AddTaskForm = ({
         TaskInput: {
           title,
           description,
-
-          due_date: dueDate || null,
+          due_date: dueDate
+            ? `${dueDate}T12:00:00`
+            : null,
           due_time: dueTime || null,
           priority: priority || null,
 

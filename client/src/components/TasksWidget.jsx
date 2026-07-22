@@ -8,14 +8,14 @@ import { EDIT_TASK, DELETE_TASK } from "../utils/mutations.js";
 import EditTaskForm from "./EditTask.jsx"
 
 const TaskWidget = () => {
-  const { id } = useParams();
+  const { date } = useParams();
   const [showTask, setShowTask] = useState(false);
   const [editTask, setEditTask] = useState(null);
 
   const { loading, error, data } = useQuery(QUERY_TASKS);
 
   const [deleteTask] = useMutation(DELETE_TASK, {
-    refetchQueries: [{ query: QUERY_TASKS, variables: { id } }],
+    refetchQueries: [{ query: QUERY_TASKS, variables: { date } }],
   });
 
   const handleDelete = async (taskId) => {
@@ -34,6 +34,9 @@ const TaskWidget = () => {
   if (error) return <p>Error: {error.message}</p>;
 
   const tasks = data?.tasks || [];
+  const filteredTasks = date
+  ? tasks.filter(task => task.due_date?.startsWith(date))
+  : tasks;
 
   return (
     <div className="flex flex-col border rounded-xl p-4">
@@ -67,11 +70,11 @@ const TaskWidget = () => {
       </div>
 
       {/* Rows */}
-      {tasks.map((task) => (
-        <div
-          key={task._id}
-          className="flex items-center border-b last:border-b-0 p-2"
-        >
+      {filteredTasks.map((task) => (
+    <div
+      key={task._id}
+      className="flex items-center border-b last:border-b-0 p-2"
+    >
           <div className="flex-1">{task.title}</div>
           <div className="flex-1">{task.description}</div>
           <div className="flex-1">

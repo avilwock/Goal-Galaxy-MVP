@@ -17,6 +17,8 @@ export const TASK_FIELDS = gql`
     goal {
       _id
       goal_name
+      icon
+      icon_color
     }
     milestone {
       _id
